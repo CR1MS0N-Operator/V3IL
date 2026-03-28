@@ -1,0 +1,7 @@
+[Unit]
+Description=NOC Status JSON Update
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=/home/foreverlx/scripts/noc/noc-update.sh
