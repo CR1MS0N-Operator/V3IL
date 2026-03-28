@@ -3,27 +3,27 @@
 }
 vault.lan {
     tls internal
-    reverse_proxy localhost:8081
+    reverse_proxy 127.0.0.1:8081
 }
 git.lan {
     tls internal
-    reverse_proxy localhost:3000
+    reverse_proxy 127.0.0.1:3000
 }
 dash.lan {
     tls internal
-    reverse_proxy localhost:8282
+    reverse_proxy 127.0.0.1:8282
 }
 glances.lan {
     tls internal
-    reverse_proxy host.containers.internal:61208
+    reverse_proxy 127.0.0.1:61208
 }
 pihole.lan {
     tls internal
-    reverse_proxy localhost:8083
+    reverse_proxy 127.0.0.1:8083
 }
 search.lan {
     tls internal
-    reverse_proxy localhost:8888
+    reverse_proxy 127.0.0.1:8888
 }
 noc.lan {
     tls internal
