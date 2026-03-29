@@ -1,6 +1,6 @@
 # Azrael Security Skill — Session Open / Close Protocol
-**Version:** 1.1
-**Date:** 2026-03-22
+**Version:** 1.6
+**Date:** 2026-03-29
 **Purpose:** Define exactly what happens at the start and end of every Claude session to ensure context is loaded correctly, work is captured, and the handoff document stays current. Also governs session scope discipline and the Claude Code session workflow.
 **Use when:** Every session — automatically. This skill governs session structure regardless of what the session is about.
 
@@ -92,6 +92,24 @@ Ask all five before generating anything. Wait for Darrius to answer each one.
 3. Any new or updated decisions — technical, research, portfolio, or career?
 4. What's the priority for next session?
 5. Anything to add to the backlog or ideas list?
+
+**Step 1b — Backlog review**
+
+Review Section 5 of the handoff before generating any output:
+- Confirm any blockers resolved this session are removed from the backlog
+- Confirm the next session priority still reflects what happened this session
+- Surface any items that should move between sections (Near-Term → Next Session, completed → removed)
+
+This takes one to two minutes. Do not skip even if the session ran long.
+
+**Step 1c — "Why it works" learning capture**
+
+For every infrastructure change, fix, or debugging sequence completed this session, write a brief mechanism explanation covering:
+- What the problem actually was at the system level
+- Why the fix works (the mechanism, not just the command)
+- What the tradeoff or gotcha is, if any
+
+Format: 2-4 sentences per item, plain prose. This runs at every session close where infrastructure work occurred. Output inline in the conversation before the handoff sections — not in the handoff document itself. The handoff captures decisions and state; the learning capture is for Darrius's personal log (Obsidian daily log or equivalent). Claude never skips this step when infra work occurred, even if the session ran long.
 
 **Step 2 — Identify which sections changed**
 
