@@ -30,3 +30,12 @@ noc.lan {
     root * /noc-status
     file_server
 }
+
+:8484 {
+    root * /noc-status
+    file_server
+}
+
+:8485 {
+    reverse_proxy 127.0.0.1:61208
+}

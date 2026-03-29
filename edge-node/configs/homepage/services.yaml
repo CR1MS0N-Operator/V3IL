@@ -1,79 +1,123 @@
-- Cerberus Metrics:
-    - Cerberus Live Graphs:
-        icon: /icons/netdata.png
-        href: https://netdata.lan
-        description: Live System Graphs
-        widget:
-          type: iframe
-          src: https://netdata.lan/v3/#after=-300;theme=slate
-          classes: h-96 w-full
-          allowScrolling: yes
 - Cerberus Threat Intel:
     - Suricata IDS:
         widget:
           type: customapi
-          url: http://host.containers.internal:19999/api/v1/data?chart=app.Suricata-Main_cpu_utilization&points=1&group=average
-          refreshInterval: 15000
+          url: http://host.containers.internal:8484/suricata.json
+          refreshInterval: 60000
           mappings:
-            - field: data.0.1
-              label: User CPU %
-              format: float
-            - field: data.0.2
-              label: Sys CPU %
-              format: float
+            - field: high_critical_alerts
+              label: Alerts (24h)
+              format: number
+            - field: last_signature
+              label: Last Sig
+              format: text
     - Cowrie Honeypot:
         widget:
           type: customapi
-          url: http://host.containers.internal:19999/api/v1/data?chart=docker_local.containers_state&points=1&group=average
-          refreshInterval: 15000
+          url: http://host.containers.internal:8484/cowrie.json
+          refreshInterval: 60000
           mappings:
-            - field: data.0.1
-              label: Running
-              format: float
-            - field: data.0.3
-              label: Exited
-              format: float
+            - field: connections
+              label: Sessions (24h)
+              format: number
+            - field: unique_ips
+              label: Unique IPs
+              format: number
+            - field: top_ip
+              label: Top IP
+              format: text
     - NightForge Shield:
-        icon: /icons/shield.svg
-        href: "#"
-        description: Scan Queue — Phase 4
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8484/nftables.json
+          refreshInterval: 60000
+          mappings:
+            - field: blackhole_drops
+              label: Blackhole Drops
+              format: number
+            - field: input_drops
+              label: Input Drops
+              format: number
+
+- Cerberus Metrics:
+    - CPU:
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8485/api/4/cpu
+          refreshInterval: 10000
+          mappings:
+            - field: total
+              label: Total %
+              format: float
+            - field: user
+              label: User %
+              format: float
+            - field: system
+              label: Sys %
+              format: float
+    - Memory:
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8485/api/4/mem
+          refreshInterval: 10000
+          mappings:
+            - field: percent
+              label: Used %
+              format: float
+    - Load:
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8485/api/4/load
+          refreshInterval: 10000
+          mappings:
+            - field: min1
+              label: 1m
+              format: float
+            - field: min5
+              label: 5m
+              format: float
+            - field: min15
+              label: 15m
+              format: float
+
+- Monitoring:
+    - Glances:
+        icon: /icons/glances.png
+        href: https://glances.lan
+        description: System Monitor
+    - WireGuard Peers:
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8484/wg.json
+          refreshInterval: 30000
+          mappings:
+            - field: peers.0.name
+              label: Peer 1
+              format: text
+            - field: peers.0.status
+              label: Status
+              format: text
+            - field: peers.1.name
+              label: Peer 2
+              format: text
+            - field: peers.1.status
+              label: Status
+              format: text
 
 - Core Infrastructure:
-    - Gitea:
-        icon: /icons/gitea.png
-        href: https://git.lan
-        description: Private Git Server
-        widget:
-          type: gitea
-          url: http://host.containers.internal:3000
-          key: REDACTED
     - Vaultwarden:
         icon: /icons/vaultwarden.png
         href: https://vault.lan
         description: Password Management
+    - Gitea:
+        icon: /icons/gitea.png
+        href: https://git.lan
+        description: Private Git Server
     - Pi-hole:
         icon: /icons/pi-hole.png
         href: https://pihole.lan/admin
         description: Network DNS & Ad Block
-    - Homepage:
-        icon: /icons/homepage.png
-        href: https://dash.lan
-        description: This Dashboard
-
-- Monitoring:
-    - Netdata:
-        widget:
-          type: customapi
-          url: http://host.containers.internal:19999/api/v1/data?chart=system.cpu&points=1&group=average
-          refreshInterval: 15000
-          mappings:
-            - field: data.0.6
-              label: User %
-              format: float
-            - field: data.0.7
-              label: Sys %
-              format: float
-    - Pi-hole DNS:
-        icon: /icons/pi-hole.png
-        href: https://pihole.lan/admin
-        description: DNS Query Statistics
+    - SearXNG:
+        icon: /icons/searxng.png
+        href: https://search.lan
+        description: Private Search

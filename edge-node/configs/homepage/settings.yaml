@@ -1,19 +1,19 @@
 base: https://dash.lan
 allowIframe: true
 host: 0.0.0.0
-title: Nyx Operations Center
+title: Veil Operations Center
 headerStyle: clean
 language: en
 layout:
-  - Cerberus Metrics:
-      style: row
-      columns: 1
   - Cerberus Threat Intel:
       style: row
       columns: 3
-  - Core Infrastructure:
+  - Cerberus Metrics:
       style: row
-      columns: 4
+      columns: 3
   - Monitoring:
       style: row
       columns: 2
+  - Core Infrastructure:
+      style: row
+      columns: 4
