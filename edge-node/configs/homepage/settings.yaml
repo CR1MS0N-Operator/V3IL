@@ -8,12 +8,12 @@ layout:
   - Cerberus Threat Intel:
       style: row
       columns: 3
-  - Cerberus Metrics:
+  - Node Metrics:
       style: row
-      columns: 3
-  - Monitoring:
+      columns: 4
+  - Network:
       style: row
-      columns: 2
+      columns: 1
   - Core Infrastructure:
       style: row
       columns: 4

@@ -43,3 +43,11 @@ noc.lan {
 :8486 {
     reverse_proxy 127.0.0.1:3000
 }
+
+:8487 {
+    reverse_proxy 10.0.0.4:61208
+}
+
+:8488 {
+    reverse_proxy 10.0.0.5:61208
+}

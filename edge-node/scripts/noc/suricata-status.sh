@@ -52,6 +52,6 @@ result = {
     "window": "24h",
     "high_critical_alerts": alert_count,
     "last_signature": last_sig,
-    "persistent_sources": persistent
+    "persistent_sources": len(persistent)
 }
 print(json.dumps(result))

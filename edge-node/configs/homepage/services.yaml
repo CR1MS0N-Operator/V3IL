@@ -8,8 +8,8 @@
             - field: high_critical_alerts
               label: Alerts (24h)
               format: number
-            - field: last_signature
-              label: Last Sig
+            - field: persistent_sources
+              label: Persistent Sources
               format: text
     - Cowrie Honeypot:
         widget:
@@ -39,23 +39,20 @@
               label: Input Drops
               format: number
 
-- Cerberus Metrics:
-    - CPU:
+- Node Metrics:
+    - Cerberus CPU:
         widget:
           type: customapi
           url: http://host.containers.internal:8485/api/4/cpu
           refreshInterval: 10000
           mappings:
             - field: total
-              label: Total %
+              label: CPU %
               format: float
-            - field: user
-              label: User %
+            - field: iowait
+              label: IOWait %
               format: float
-            - field: system
-              label: Sys %
-              format: float
-    - Memory:
+    - Cerberus Memory:
         widget:
           type: customapi
           url: http://host.containers.internal:8485/api/4/mem
@@ -64,27 +61,35 @@
             - field: percent
               label: Used %
               format: float
-    - Load:
+            - field: available
+              label: Available (bytes)
+              format: number
+    - Tairn:
         widget:
           type: customapi
-          url: http://host.containers.internal:8485/api/4/load
+          url: http://host.containers.internal:8487/api/4/cpu
           refreshInterval: 10000
           mappings:
-            - field: min1
-              label: 1m
+            - field: total
+              label: CPU %
               format: float
-            - field: min5
-              label: 5m
+            - field: user
+              label: User %
               format: float
-            - field: min15
-              label: 15m
+    - Hermes:
+        widget:
+          type: customapi
+          url: http://host.containers.internal:8488/api/4/cpu
+          refreshInterval: 10000
+          mappings:
+            - field: total
+              label: CPU %
+              format: float
+            - field: user
+              label: User %
               format: float
 
-- Monitoring:
-    - Glances:
-        icon: /icons/glances.png
-        href: https://glances.lan
-        description: System Monitor
+- Network:
     - WireGuard Peers:
         widget:
           type: customapi
@@ -94,15 +99,21 @@
             - field: peers.0.name
               label: Peer 1
               format: text
-            - field: peers.0.status
-              label: Status
-              format: text
+            - field: peers.0.handshake_seconds
+              label: Handshake (s)
+              format: number
             - field: peers.1.name
               label: Peer 2
               format: text
-            - field: peers.1.status
-              label: Status
+            - field: peers.1.handshake_seconds
+              label: Handshake (s)
+              format: number
+            - field: peers.2.name
+              label: Peer 3
               format: text
+            - field: peers.2.handshake_seconds
+              label: Handshake (s)
+              format: number
 
 - Core Infrastructure:
     - Vaultwarden:
