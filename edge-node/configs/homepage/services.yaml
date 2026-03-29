@@ -113,6 +113,11 @@
         icon: /icons/gitea.png
         href: https://git.lan
         description: Private Git Server
+        widget:
+          type: gitea
+          url: http://host.containers.internal:8486
+          key: "{{HOMEPAGE_VAR_GITEA_TOKEN}}"
+          version: 1
     - Pi-hole:
         icon: /icons/pi-hole.png
         href: https://pihole.lan/admin
