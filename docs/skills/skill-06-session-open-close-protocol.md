@@ -6,6 +6,14 @@
 
 ---
 
+CRITICAL — Claude Code file handling:
+- NEVER use Write() on the handoff file
+- NEVER rewrite the file from scratch
+- ALWAYS cp source → dest first, then apply str_replace operations only
+- If Claude Code attempts a Write() on the handoff file, it is wrong — stop and use str_replace
+- The cp + str_replace pattern is the only permitted approach, no exceptions
+
+
 ## Session Open Protocol
 
 Every session starts with this sequence before any technical work begins.
