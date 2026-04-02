@@ -1,6 +1,6 @@
 # Azrael Security Skill — Quarterly Review Execution Standard
-**Version:** 1.0
-**Date:** 2026-03-19
+**Version:** 1.1
+**Date:** 2026-04-01
 **Purpose:** Define exactly how Claude executes the quarterly review so it produces a recalibrated plan, updated gap table, and rebuilt calendar — not just a summary of what happened.
 **Use when:** Darrius initiates a quarterly review, references the Phase 4 template, or the quarterly review calendar event fires.
 
@@ -10,12 +10,12 @@
 
 Quarterly reviews run the first week of each new quarter:
 
-| Review | Window | Calendar Event |
-|---|---|---|
-| Q1 Review | June 1–7, 2026 | June 1, 2026 |
-| Q2 Review | September 1–7, 2026 | September 1, 2026 |
-| Q3 Review | December 1–7, 2026 | December 1, 2026 |
-| Q4 Hard Rebuild | March 1–7, 2027 | March 1, 2027 |
+| Review | Quarter | Window | Calendar Event |
+|---|---|---|---|
+| Q1 Review | January – March | First week of April | April 1, 2026 |
+| Q2 Review | April – June | First week of July | July 1, 2026 |
+| Q3 Review | July – September | First week of October | October 1, 2026 |
+| Q4 Hard Rebuild | October – December | First week of January | January 1, 2027 |
 
 The Q4 review is a hard rebuild — the entire 12-month plan gets rewritten from scratch based on actual state, not patched. Every other quarterly review recalibrates the upcoming quarter only.
 
