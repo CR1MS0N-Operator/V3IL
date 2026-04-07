@@ -217,3 +217,27 @@ replaced by Quadlet with correct After= directives
 management, consistent with rest of stack
 **Lesson:** Hand-written podman-generate-systemd units are fragile —
 always use Quadlets for new deployments
+
+---
+
+### Issue: Cerberus soft lockup — raydium_ts touchscreen driver (Chromebook hardware)
+**Symptom:** Kernel watchdog fires repeatedly: "BUG: soft lockup — CPU#0 stuck for Xs [podman:PID]". Cerberus reboots every few hours.
+**Root cause:** raydium_ts i2c touchscreen driver IRQ handler blocks on Chromebook hardware running standard Linux kernel. The driver finds no power regulators (dummy regulator warnings) and the IRQ thread stalls, starving the scheduler. The offending process in the watchdog message is misleading — it's whichever process the watchdog points at, not the actual cause.
+**Resolution:** Blacklist alone insufficient — autodetect hook in mkinitcpio bakes the module into initramfs before blacklist is applied. Use udev rule to unbind the device immediately after the driver loads:
+- `echo "blacklist raydium_ts" | sudo tee /etc/modprobe.d/disable-raydium.conf`
+- `sudo tee /etc/udev/rules.d/99-disable-raydium.rules << 'EOF'`
+- `ACTION=="add", SUBSYSTEM=="i2c", KERNELS=="i2c-RAYD0001:00", ATTR{driver/unbind}="i2c-RAYD0001:00"`
+- `EOF`
+- `sudo udevadm control --reload-rules`
+Verify: after reboot, `ls /sys/bus/i2c/drivers/raydium_ts/` should not contain `i2c-RAYD0001:00`. Two harmless regulator warning lines in journalctl are expected and not lockups.
+**Lesson:** On Chromebook hardware, touchscreen drivers cause IRQ hangs under standard kernels. Watchdog message PID is not the root cause — check irq/ threads in ps output first.
+
+---
+
+### Issue: User Quadlets not starting after reboot — degraded session state
+**Symptom:** All user Quadlets show as not registered after reboot. `systemctl --user list-units` returns nothing for container services. No failed units — services simply absent.
+**Root cause:** Linger is enabled but the user session came up in a degraded state after multiple hard crashes. The Quadlet generator did not run automatically, so no units were generated or registered.
+**Resolution:** `systemctl --user daemon-reload` triggers the Quadlet generator to scan `~/.config/containers/systemd/`, generate units, and auto-start them.
+**Lesson:** If user Quadlets are missing entirely (not failed, not inactive — absent), daemon-reload is the fix. Distinct from the linger issue where services fail to start — this is a generator registration failure.
+
+--- 
