@@ -220,17 +220,15 @@ always use Quadlets for new deployments
 
 ---
 
-### Issue: Cerberus soft lockup — raydium_ts touchscreen driver (Chromebook hardware)
-**Symptom:** Kernel watchdog fires repeatedly: "BUG: soft lockup — CPU#0 stuck for Xs [podman:PID]". Cerberus reboots every few hours.
-**Root cause:** raydium_ts i2c touchscreen driver IRQ handler blocks on Chromebook hardware running standard Linux kernel. The driver finds no power regulators (dummy regulator warnings) and the IRQ thread stalls, starving the scheduler. The offending process in the watchdog message is misleading — it's whichever process the watchdog points at, not the actual cause.
-**Resolution:** Blacklist alone insufficient — autodetect hook in mkinitcpio bakes the module into initramfs before blacklist is applied. Use udev rule to unbind the device immediately after the driver loads:
-- `echo "blacklist raydium_ts" | sudo tee /etc/modprobe.d/disable-raydium.conf`
-- `sudo tee /etc/udev/rules.d/99-disable-raydium.rules << 'EOF'`
-- `ACTION=="add", SUBSYSTEM=="i2c", KERNELS=="i2c-RAYD0001:00", ATTR{driver/unbind}="i2c-RAYD0001:00"`
-- `EOF`
-- `sudo udevadm control --reload-rules`
-Verify: after reboot, `ls /sys/bus/i2c/drivers/raydium_ts/` should not contain `i2c-RAYD0001:00`. Two harmless regulator warning lines in journalctl are expected and not lockups.
-**Lesson:** On Chromebook hardware, touchscreen drivers cause IRQ hangs under standard kernels. Watchdog message PID is not the root cause — check irq/ threads in ps output first.
+### Issue: Cerberus soft/hard lockups — raydium_ts touchscreen IRQ storm (Chromebook hardware)
+**Symptom:** Kernel watchdog fires repeatedly across multiple CPUs. Escalation pattern: soft lockups on one CPU after hours of uptime → hard LOCKUPs on multiple CPUs within seconds of boot. Watchdog points at Podman PID — misleading.
+**Root cause:** raydium_ts touchscreen hardware on the Chromebook generates a sustained IRQ storm (~425 interrupts/sec on IRQ 117) regardless of whether the driver is bound. Unbinding the driver stops the driver from handling interrupts but does not stop the hardware from firing them. The unhandled IRQ storm saturates whichever CPU IRQ 117 is affinitized to, eventually cascading to hard lockups across all CPUs.
+**Resolution — three-layer fix (all three required):**
+1. Blacklist the driver: `echo "blacklist raydium_ts" | sudo tee /etc/modprobe.d/disable-raydium.conf` — prevents driver from attaching, but insufficient alone due to mkinitcpio autodetect hook baking the module into initramfs
+2. Udev unbind rule: `/etc/udev/rules.d/99-disable-raydium.rules` with `ACTION=="add", SUBSYSTEM=="i2c", KERNELS=="i2c-RAYD0001:00", ATTR{driver/unbind}="i2c-RAYD0001:00"` — unbinds device at boot, removes it from interrupt table in most cases
+3. IRQ affinity pin: `echo 8 | sudo tee /proc/irq/117/smp_affinity` persisted via `/etc/tmpfiles.d/mask-raydium-irq.conf` with `w /proc/irq/117/smp_affinity - - - - 8` — pins IRQ 117 to CPU3 only if hardware fires anyway, containing the storm to one CPU
+**Verification:** After reboot, `cat /proc/interrupts | grep RAYD` should return empty. `cat /proc/irq/117/smp_affinity` should return `8`. No lockup entries in `sudo journalctl -k -b 0 | grep -iE "lockup|hard LOCKUP"`.
+**Lesson:** Unbinding a driver does not silence the hardware IRQ. On misbehaving embedded hardware (touchscreens, sensors), check `/proc/interrupts` for the IRQ counter even after unbind — if it's still climbing, the hardware is firing and IRQ affinity pinning is required. Watchdog PID is never the root cause — check `irq/` threads and `/proc/interrupts` first.
 
 ---
 
