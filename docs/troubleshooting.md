@@ -238,4 +238,37 @@ always use Quadlets for new deployments
 **Resolution:** `systemctl --user daemon-reload` triggers the Quadlet generator to scan `~/.config/containers/systemd/`, generate units, and auto-start them.
 **Lesson:** If user Quadlets are missing entirely (not failed, not inactive — absent), daemon-reload is the fix. Distinct from the linger issue where services fail to start — this is a generator registration failure.
 
---- 
+---
+
+### Issue: Gitea SSH push hangs or permission denied from NightForge
+**Symptom:** `git push` to git.lan hangs or returns permission denied
+**Root cause:** Two compounding issues:
+1. git.lan resolves to LAN IP (192.168.1.251) — Gitea SSH port 2222 is
+   WireGuard-only per nftables access model, not accessible via LAN
+2. Remote URL had `foreverlx` as SSH user — Gitea requires `git` as the
+   system SSH user regardless of account name
+**Resolution:** SSH config Host git.lan must use HostName 10.0.0.1 (WireGuard).
+Remote URL format: ssh://git@git.lan:2222/<account>/<repo>.git
+**Lesson:** Gitea SSH user is always `git`. WireGuard-only services are not
+reachable via LAN IP — use WireGuard IP in SSH config HostName.
+
+---
+
+## libvirt / VMs
+
+### Issue: virsh shows empty VM list despite VMs existing
+**Symptom:** `virsh list --all` returns empty, VMs visible in virt-manager
+**Root cause:** virsh defaults to `qemu:///session` (user session libvirt). VMs are defined under `qemu:///system` (system libvirt). Different URI, different domain registry.
+**Resolution:** Set `LIBVIRT_DEFAULT_URI="qemu:///system"` in `~/.config/environment.d/99-nightforge.conf`
+**Lesson:** Always specify `--connect qemu:///system` or set the env var permanently. Domain XML definitions should be committed to veil repo to survive definition loss.
+
+---
+
+## OpenCode
+
+### Issue: OpenCode TUI hangs on launch with no output
+**Symptom:** `opencode` command hangs silently, no TUI renders, no stderr output
+**Root cause:** `/tmp` mounted with `noexec` — OpenCode extracts a `.so` render library to `/tmp` at startup and dlopen()s it. noexec prevents the kernel from mapping executable segments from tmpfs.
+**Resolution:** `sudo mount -o remount,exec /tmp` — make permanent via `sudo systemctl edit tmp.mount` adding `Options=rw,nosuid,nodev,noatime,inode64,huge=within_size`
+**Diagnosis:** `opencode --print-logs 2>&1` reveals the actual error inline
+**Lesson:** Always run `--print-logs` first when a TUI tool hangs silently. noexec on /tmp breaks any tool that extracts and loads native libraries at runtime.`
