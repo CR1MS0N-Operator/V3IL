@@ -272,3 +272,102 @@ reachable via LAN IP — use WireGuard IP in SSH config HostName.
 **Resolution:** `sudo mount -o remount,exec /tmp` — make permanent via `sudo systemctl edit tmp.mount` adding `Options=rw,nosuid,nodev,noatime,inode64,huge=within_size`
 **Diagnosis:** `opencode --print-logs 2>&1` reveals the actual error inline
 **Lesson:** Always run `--print-logs` first when a TUI tool hangs silently. noexec on /tmp breaks any tool that extracts and loads native libraries at runtime.`
+
+---
+
+## Dashboard / API Integration
+
+### Issue: Pi-hole v6 API returns api_seats_exceeded
+**Symptom:** Dashboard Pi-hole collector returns null, Pi-hole API returns
+`{"error": {"key": "api_seats_exceeded"}}` on auth attempts
+**Root cause:** Pi-hole v6 has a max_sessions limit. Collector was
+authenticating on every collectOps() cycle (~every 30s), exhausting the
+session table. Sessions accumulate until the limit is hit — subsequent
+auth attempts are rejected entirely.
+**Resolution:** Cache the session SID at the package level with a 10-minute
+TTL. On 401 response, clear the cache and re-authenticate once, then retry.
+This reduces session creation from ~120/hour to ~6/hour.
+**Lesson:** Pi-hole v6 uses session-based auth with a hard session limit.
+Any automated collector must cache and reuse the SID. sqlite3 is not
+available in the Pi-hole container to manually clear sessions. Restart the
+container to flush all sessions if the table is exhausted.
+
+---
+
+### Issue: NixOS docker-firewall rules not applying — DOCKER-USER chain missing at boot
+**Symptom:** DOCKER-USER iptables rules added via `networking.firewall.extraCommands`
+have no effect. `iptables -L DOCKER-USER` shows only the default RETURN rule.
+**Root cause:** NixOS firewall service starts at boot before Docker. The
+DOCKER-USER chain is created by Docker at runtime. When extraCommands runs,
+the chain does not yet exist — rule insertion fails silently.
+**Resolution:** Create a dedicated systemd oneshot service with
+`After=docker.service` that inserts DOCKER-USER rules after Docker starts.
+Include a retry loop waiting for the chain to exist before inserting rules.
+```nix
+systemd.services.docker-firewall = {
+  after = [ "docker.service" ];
+  requires = [ "docker.service" ];
+  wantedBy = [ "multi-user.target" ];
+  serviceConfig = {
+    Type = "oneshot";
+    RemainAfterExit = true;
+    ExecStart = pkgs.writeShellScript "docker-firewall-start" ''
+      for i in $(seq 1 10); do
+        ${pkgs.iptables}/bin/iptables -L DOCKER-USER -n &>/dev/null && break
+        sleep 1
+      done
+      ${pkgs.iptables}/bin/iptables -I DOCKER-USER 1 -p tcp --dport 7443 -j DROP
+      ${pkgs.iptables}/bin/iptables -I DOCKER-USER 1 -s 10.0.0.0/24 -p tcp --dport 7443 -j ACCEPT
+    '';
+  };
+};
+```
+**Lesson:** NixOS `networking.firewall.extraCommands` runs at firewall service
+start — before Docker creates its chains. Never use extraCommands for
+Docker-specific firewall rules. Always use a post-Docker oneshot service.
+
+---
+
+### Issue: Mythic GraphQL endpoint returns 301
+**Symptom:** POST to `https://10.0.0.4:7443/graphql` returns 301 Moved Permanently
+**Root cause:** Mythic nginx requires trailing slash on the GraphQL endpoint.
+Without it nginx redirects, which breaks POST requests (redirect changes POST
+to GET).
+**Resolution:** Use `https://10.0.0.4:7443/graphql/` (trailing slash). If using
+curl, add -L to follow redirects during debugging but fix the URL in code.
+**Lesson:** Always verify GraphQL endpoint URLs with a direct curl before
+writing collector code. Trailing slash requirements are nginx config-specific.
+
+---
+
+### Issue: Mythic GraphQL c2profile query fails — server_type field missing
+**Symptom:** GraphQL query `{ c2profile { name running server_type } }` returns
+validation error: "field 'server_type' not found in type: 'c2profile'"
+**Root cause:** server_type field does not exist on the c2profile type in
+Mythic v3.4.x. The field was either removed or never existed in this version.
+**Resolution:** Remove server_type from the query. Correct query:
+`{ c2profile { name running } }`
+**Lesson:** Always introspect the GraphQL schema before writing queries against
+a specific Mythic version. Field availability varies by version.
+
+---
+
+### Issue: Beszel API returns abbreviated field names in info blob
+**Symptom:** Beszel `/api/collections/systems/records` returns metrics as
+single-letter abbreviated keys (cpu, mp, dp, g, u, la) not descriptive names
+**Root cause:** Beszel stores metrics as a compact JSON blob using abbreviated
+keys to minimize storage. The schema is internal and not documented publicly.
+**Resolution:** Decode from a live API response before writing any collector
+code. Confirmed mapping:
+  cpu → CPU usage %
+  mp  → memory used %
+  dp  → disk used %
+  g   → GPU usage % (absent if no GPU)
+  u   → uptime seconds
+  la  → load average array [1m, 5m, 15m]
+  v   → agent version
+  status field (top-level) → "up" | "down" | "paused"
+Metrics are returned inline in the systems collection — no separate
+system_stats fetch needed for current values.
+**Lesson:** Always curl the live API and inspect the actual response before
+writing struct definitions. Do not assume field names from documentation.
