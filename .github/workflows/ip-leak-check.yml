@@ -1,0 +1,68 @@
+name: IP Leak Check
+on:
+  push:
+    paths:
+      - '**.md'
+      - '**.yaml'
+      - '**.yml'
+      - '**.conf'
+      - '**.nix'
+  pull_request:
+    paths:
+      - '**.md'
+      - '**.yaml'
+      - '**.yml'
+      - '**.conf'
+      - '**.nix'
+
+jobs:
+  ip-leak-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: false
+      - name: Check for real IP patterns
+        run: |
+          # Check for private IPs that look like real (non-placeholder) addresses
+          # We allow 10.10.10.x (placeholders) but flag 10.0.0.x (real WG IPs)
+          echo "=== Checking for exposed real IPs ==="
+          BAD_IPS=0
+          
+          # Pattern: 10.0.0.x where x is 1-255 (but not in example files)
+          while IFS= read -r line; do
+            file=$(echo "$line" | cut -d: -f1)
+            # Skip submodules and example files
+            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules)' && continue
+            echo "WARNING: Possible real IP in $file"
+            echo "  $line"
+            BAD_IPS=$((BAD_IPS + 1))
+          done < <(grep -rnP '10\.0\.0\.(?!10\.)' --include='*.md' --include='*.yaml' --include='*.yml' --include='*.conf' . 2>/dev/null || true)
+          
+          # Check for WireGuard private keys
+          echo "=== Checking for WireGuard private keys ==="
+          WG_KEYS=0
+          while IFS= read -r line; do
+            file=$(echo "$line" | cut -d: -f1)
+            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules)' && continue
+            echo "WARNING: Possible private key in $file"
+            WG_KEYS=$((WG_KEYS + 1))
+          done < <(grep -rnP 'PrivateKey\s*=\s*[^R]' --include='*.conf' --include='*.nix' --include='*.yaml' --include='*.yml' . 2>/dev/null || true)
+          
+          # Check for API keys/tokens
+          echo "=== Checking for API keys ==="
+          API_KEYS=0
+          while IFS= read -r line; do
+            file=$(echo "$line" | cut -d: -f1)
+            echo "$file" | grep -qE '(nightforge-vpn-tui|node_modules)' && continue
+            echo "WARNING: Possible API key in $file"
+            API_KEYS=$((API_KEYS + 1))
+          done < <(grep -rnP '(key:\s*"?!?[A-Za-z0-9]{20,}|api[_-]?key|api[_-]?token|secret[_-]?key)' --include='*.yaml' --include='*.yml' --include='*.json' --include='*.conf' . 2>/dev/null | grep -v '"ROTATED"' || true)
+          
+          echo "---"
+          echo "Found: $BAD_IPS potential IP leaks, $WG_KEYS potential private keys, $API_KEYS potential API keys"
+          if [ "$BAD_IPS" -gt 0 ] || [ "$WG_KEYS" -gt 0 ] || [ "$API_KEYS" -gt 0 ]; then
+            echo "FAIL: Potential security exposure detected"
+            exit 1
+          fi
+          echo "PASS: No security exposures detected"
