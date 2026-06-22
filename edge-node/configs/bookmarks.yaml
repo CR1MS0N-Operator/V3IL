@@ -1,0 +1,17 @@
+---
+- Documentation:
+    - Arch Wiki:
+        - icon: arch-linux
+          href: https://wiki.archlinux.org/
+    - Alpine Wiki:
+        - icon: alpine-linux
+          href: https://wiki.alpinelinux.org/
+    - NixOS Wiki:
+        - icon: nixos
+          href: https://wiki.nixos.org/wiki/NixOS_Wiki
+    - Suricata Docs:
+        - icon: /icons/suricata.svg
+          href: https://docs.suricata.io/
+    - Netdata Docs:
+        - icon: /icons/netdata.png
+          href: https://learn.netdata.cloud/

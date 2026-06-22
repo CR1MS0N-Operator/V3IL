@@ -1,3 +1,8 @@
+---
+name: container-boundary-research-methodology
+description: Use when Darrius is working on any container boundary research session — scoping a research question, running lab work, reproducing a behavior, writing up a finding, or deciding whether a result meets the publication threshold.
+---
+
 # Azrael Security Skill — Container Boundary Research Methodology
 **Version:** 1.0
 **Date:** 2026-03-19

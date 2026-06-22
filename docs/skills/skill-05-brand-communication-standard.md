@@ -1,6 +1,11 @@
+---
+name: brand-communication-standard
+description: Use when Darrius asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, or personal site copy. Governs voice, AI-tell checks, em-dash prohibition, and the brand positioning rules.
+---
+
 # Azrael Security Skill — Brand & Communication Standard
-**Version:** 1.1
-**Date:** 2026-03-23
+**Version:** 1.2
+**Date:** 2026-03-27
 **Purpose:** Define voice, positioning, and quality standards for all public-facing content produced under the Azrael Security brand.
 **Use when:** Darrius asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, personal site copy, or any content that represents Azrael Security publicly.
 
@@ -50,6 +55,8 @@ Write like a practitioner for practitioners. These rules apply to everything pub
 
 **Never:**
 - Em-dashes anywhere in public-facing copy. No exceptions. Use commas, periods, or restructure the sentence.
+- "real engagement/real conditions" or any equivalent framing. The infrastructure details carry the signal without narration. Stating it reads as marketing copy.
+- Reference HackSpaceCon or any specific conference in public-facing copy until the talk is accepted. Premature references read as aspiration, not signal.
 - "I am passionate about cybersecurity"
 - "I am excited to share"
 - "This is a deep dive into"
@@ -133,12 +140,13 @@ The framing that works:
 - "Observed in production traffic from Cowrie honeypot over X days of real attacker interaction"
 - "Tested against the Veil WireGuard mesh under real network conditions"
 
-The framing that doesn't:
+The framing that does not work:
 - "I set up a test environment to reproduce this"
 - "In my homelab I found..."
 - "While doing CTF challenges I noticed..."
+- "Under real engagement conditions..." or "real engagement/real conditions" — this is narration, not signal. Let the infrastructure details speak.
 
-The live infrastructure is the differentiator. Every research publication should make clear that the finding came from real infrastructure with real conditions, not a purpose-built lab that only exists for the writeup.
+The live infrastructure is the differentiator. Every research publication should make clear that the finding came from real infrastructure, not a purpose-built lab that only exists for the writeup. State the infrastructure facts. Do not editorialize about them.
 
 ---
 
@@ -165,6 +173,7 @@ What never appears in a conference abstract:
 - "We will look at"
 - Scope that cannot be delivered in the time slot
 - Findings described so vaguely they could mean anything
+- Conference name referenced speculatively before acceptance
 
 ---
 
@@ -174,7 +183,7 @@ Post about what you built or found. Not about what you are learning, planning, o
 
 **Post when:**
 - A research finding is published, link the writeup, state the finding in one sentence
-- A significant infrastructure milestone is complete: first Mythic callback, new Veil node integrated, HackSpaceCon talk accepted
+- A significant infrastructure milestone is complete: first Mythic callback, new Veil node integrated, conference talk accepted
 - A writeup is committed that demonstrates a specific mechanism, link it, state what mechanism it explains
 
 **Do not post:**
@@ -183,6 +192,7 @@ Post about what you built or found. Not about what you are learning, planning, o
 - "Day N of my security journey"
 - Course completion announcements as standalone posts
 - CTF solve announcements without a linked writeup
+- Speculative references to conferences before talk acceptance
 
 **The test for any post:** Would an engineer at runZero read this and learn something concrete, or would they learn only that you exist and are trying? If it is the latter, do not post it.
 
@@ -193,9 +203,9 @@ Post about what you built or found. Not about what you are learning, planning, o
 ## When Claude Is Helping With Public Content
 
 1. Ask what the content is for before writing anything — README, LinkedIn post, abstract, personal site copy. The format rules differ by context.
-2. Apply the voice rules before delivering any draft — if a draft contains "excited to share," "passionate about," or an em-dash, rewrite before delivering.
+2. Apply the voice rules before delivering any draft — if a draft contains "excited to share," "passionate about," an em-dash, or "real engagement/real conditions" framing, rewrite before delivering.
 3. For READMEs: ask for the current honest state of the project before writing. Do not fill gaps with aspirational language.
 4. For research publications: confirm the finding is reproducible and documented before framing it publicly. A writeup exists in `security-research/` before a LinkedIn post goes out.
-5. For conference abstracts: confirm the research question is answerable within the current state of the work. Do not write an abstract for research that does not exist yet.
+5. For conference abstracts: confirm the research question is answerable within the current state of the work. Do not write an abstract for research that does not exist yet. Do not reference the target conference until acceptance is confirmed.
 6. Flag scope inflation — if the draft implies capabilities or completeness that the current state does not support, name it explicitly before delivering.
 7. Run the AI-tell check on every draft before delivering. Remove editorializing, opening hooks, em-dashes, and summary restatements at paragraph ends.

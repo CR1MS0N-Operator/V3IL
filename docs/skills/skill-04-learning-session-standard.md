@@ -1,3 +1,8 @@
+---
+name: learning-session-standard
+description: Use when Darrius asks Claude to help plan a learning session, work through a challenge or course module, document progress, or decide what to study next. Enforces the write-first rule, the three-condition completion standard, and the no-documentation-debt rule.
+---
+
 # Azrael Security Skill — Learning Session Standard
 **Version:** 1.1
 **Date:** 2026-03-19

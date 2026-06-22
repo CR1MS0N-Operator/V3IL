@@ -1,3 +1,8 @@
+---
+name: infrastructure-operations-standard
+description: Use when Darrius asks Claude to help with any work on Cerberus, NightForge, Tairn, or Hermes — service changes, config edits, Quadlet deployments, NixOS changes, firewall rules, WireGuard, or troubleshooting. Enforces node-specific rules, command format, verification steps, and commit standards.
+---
+
 # Azrael Security Skill — Infrastructure Operations Standard
 **Version:** 1.0
 **Date:** 2026-03-19

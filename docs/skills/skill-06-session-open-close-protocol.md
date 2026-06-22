@@ -1,18 +1,15 @@
+---
+name: session-open-close-protocol
+description: Use at the start and end of every session, automatically. Governs handoff document loading, skill file reads, backlog review, session close five-question sequence, and Claude Code handoff. This skill is read unconditionally — every session, no exceptions.
+---
+
 # Azrael Security Skill — Session Open / Close Protocol
-**Version:** 1.6
-**Date:** 2026-03-29
+**Version:** 1.5
+**Date:** 2026-03-27
 **Purpose:** Define exactly what happens at the start and end of every Claude session to ensure context is loaded correctly, work is captured, and the handoff document stays current. Also governs session scope discipline and the Claude Code session workflow.
 **Use when:** Every session — automatically. This skill governs session structure regardless of what the session is about.
 
 ---
-
-CRITICAL — Claude Code file handling:
-- NEVER use Write() on the handoff file
-- NEVER rewrite the file from scratch
-- ALWAYS cp source → dest first, then apply str_replace operations only
-- If Claude Code attempts a Write() on the handoff file, it is wrong — stop and use str_replace
-- The cp + str_replace pattern is the only permitted approach, no exceptions
-
 
 ## Session Open Protocol
 
@@ -21,16 +18,40 @@ Every session starts with this sequence before any technical work begins.
 **Step 1 — Confirm the handoff document is loaded**
 The handoff document (`azrael-handoff-YYYY-MM-DD.md`) is attached to the Azrael Security Claude project and should be present in context. Claude reads it fully before responding to any technical request. If it is not present or appears outdated, flag it immediately: "The handoff document in this project is dated [date] — is there a more recent version to upload before we start?"
 
-**Step 2 — Surface the session priority**
-Do not assume what to work on. Ask one question: "What do you want to focus on today?" Then map the answer against Section 5 of the handoff (Backlog) to confirm it's on the list or note that it's new scope.
+**Step 1b — Read applicable skill files**
+After confirming the handoff is loaded, call `view` on this file (skill-06) via the view tool. This is the only unconditional read — it happens every session without exception. Running skill-06 from memory is not equivalent and is the failure mode this step exists to prevent. Also read skill-09 (verification-and-accuracy-standard) unconditionally — it governs information sourcing behavior for all technical work and applies regardless of session focus.
 
-**Step 3 — Check for open items from the last session**
-Section 7 of the handoff contains the last three session logs. Before starting new work, check for any explicitly unresolved items — an infrastructure change that was mid-flight, a writeup that was in progress, an application that needed to be submitted. Surface these in one line: "Last session left [item] unresolved — handle that first or carry it forward?"
+Then assess the session focus. If the focus is already clear from the opening message, read the applicable skill files before work in that domain begins. If the focus is not yet clear, complete Steps 2 and 3 first, then read applicable skill files before work starts.
 
-**Step 4 — Check for documentation debt**
+Domain-triggered reads — call `view` on each applicable file before entering that domain:
+
+| Domain | Skill file |
+|---|---|
+| Infrastructure work (any Veil node) | skill-02 |
+| Research session | skill-08 + skill-01 |
+| Learning session | skill-04 |
+| Job application / career | skill-03 |
+| Public-facing content | skill-05 |
+| Quarterly review | skill-07 |
+
+If no skill file maps to the session focus, confirm that explicitly before proceeding: "This doesn't map to an existing skill file — proceeding without one." Do not silently skip the check.
+
+**Step 2 — Review the backlog and surface the session priority**
+Check Section 5 of the handoff. Identify:
+1. What is scheduled as the next session (Next Session block)
+2. Whether there are any unresolved items from the last session log (Section 7)
+3. Whether there is documentation debt from a learning session (Section 6)
+
+State these explicitly in one or two lines, then ask: "What do you want to focus on today?" If the answer matches the scheduled next session, proceed. If it diverges, confirm whether this is a priority shift or an addition — and whether the scheduled session gets deferred or dropped.
+
+Do not assume the scheduled next session is the priority. Do not assume a divergence is scope creep. Ask first, then decide together.
+
+Also cross-check backlog items against the session logs. If a backlog item says a decision or milestone is "not yet done" but the session logs mention it being completed or finalized, treat that as a handoff capture failure and surface it immediately: "The backlog says [item] is pending but Session [N] log mentions it was completed — confirming state before proceeding."
+
+**Step 3 — Check for documentation debt**
 If the last session involved a learning track, ask: "Is the artifact from last session committed?" If not, that gets handled before new material starts. This enforces the no-documentation-debt rule from Skill 4 without requiring Darrius to remember it.
 
-Steps 2 through 4 should take under two minutes. The goal is a clean starting state, not a lengthy review.
+Steps 2 through 3 should take under two minutes. The goal is a clean starting state, not a lengthy review.
 
 ---
 
@@ -54,11 +75,14 @@ This pattern applies to Claude Code sessions as well. See Claude Code section be
 
 ## During the Session
 
+**Skill file reference throughout the session:**
+When work enters a domain covered by a skill file, that file governs how Claude executes in that domain for the remainder of the session. If a session shifts domains — for example, infrastructure work that transitions into a research discussion — read the applicable skill file at the transition point before proceeding. Do not rely on memory of a skill file read earlier in a prior session.
+
 **Scope management:**
 If a request would significantly expand the session beyond the stated focus — for example, starting a new research track when the session goal was infrastructure work — flag it: "That's outside today's focus — add it to the backlog for next session or shift focus now?" Do not silently expand scope.
 
 **Decision capture:**
-Any technical decision made during the session that affects infrastructure, research direction, or career strategy gets noted explicitly. At session close these become Section 3 updates in the handoff.
+Any technical decision made during the session that affects infrastructure, research direction, or career strategy gets noted explicitly. At session close these become Section 0 updates in the handoff.
 
 **Operator rules enforcement:**
 The operator rules in Section 0 of the handoff apply throughout. Never ask for credentials, tokens, or private keys. Use `rg` on NightForge, `grep` on Cerberus. Tairn changes go in `configuration.nix`. These are not repeated every session — they are enforced silently.
@@ -91,6 +115,9 @@ Do not suggest session close:
 
 When session close is triggered — hard or soft — run this sequence in order.
 
+**Step 0 — Re-read skill-06 before running close protocol**
+Call `view` on skill-06 before asking the five questions. Do not run the close protocol from memory. This is the step that was missing when session naming was skipped — the protocol is only reliable when read, not recalled.
+
 **Step 1 — Ask the five questions**
 
 Ask all five before generating anything. Wait for Darrius to answer each one.
@@ -101,23 +128,13 @@ Ask all five before generating anything. Wait for Darrius to answer each one.
 4. What's the priority for next session?
 5. Anything to add to the backlog or ideas list?
 
-**Step 1b — Backlog review**
+**Step 1b — Backlog review at close**
+Review Section 5 of the handoff. Identify:
+1. Which backlog items were completed this session — remove or mark done
+2. Which gate conditions or blockers have been resolved since last session
+3. What the next session priority should be based on current state
 
-Review Section 5 of the handoff before generating any output:
-- Confirm any blockers resolved this session are removed from the backlog
-- Confirm the next session priority still reflects what happened this session
-- Surface any items that should move between sections (Near-Term → Next Session, completed → removed)
-
-This takes one to two minutes. Do not skip even if the session ran long.
-
-**Step 1c — "Why it works" learning capture**
-
-For every infrastructure change, fix, or debugging sequence completed this session, write a brief mechanism explanation covering:
-- What the problem actually was at the system level
-- Why the fix works (the mechanism, not just the command)
-- What the tradeoff or gotcha is, if any
-
-Format: 2-4 sentences per item, plain prose. This runs at every session close where infrastructure work occurred. Output inline in the conversation before the handoff sections — not in the handoff document itself. The handoff captures decisions and state; the learning capture is for Darrius's personal log (Obsidian daily log or equivalent). Claude never skips this step when infra work occurred, even if the session ran long.
+State the next session priority explicitly before outputting the handoff sections. This step runs at every session close without exception.
 
 **Step 2 — Identify which sections changed**
 
@@ -128,6 +145,7 @@ Based on the answers, identify which of the seven handoff sections need updating
 | Completed work, milestones | Section 3 (Active Operations) and/or Section 7 (Session Log) |
 | Infrastructure state change | Section 2 (Infrastructure State) |
 | New or updated decisions | Section 0 (Stable Reference — Locked Decisions table) |
+| Research question locked or refined | Section 3 (Active Operations) AND Section 0 (Locked Decisions table) — both required, not just session log |
 | Repo changes | Section 4 (Repository State) |
 | New backlog items | Section 5 (Backlog) |
 | Course progress | Section 6 (Courses & Certifications) |
@@ -138,36 +156,40 @@ Section 7 always updates — every session gets a log entry regardless of what e
 **Step 3 — Generate the session log entry**
 
 Format for Section 7:
-
 ```
-### Session [N] — YYYY-MM-DD
+### Session [N] — YYYY-MM-DD — [Session Name]
 [Two to four sentences. What was worked on, what was completed or decided, what was left open.
 No bullet points — prose only. Dense enough that reading it cold gives full context.
 Thin enough that it doesn't require reading the whole session to understand.]
 ```
 
+The session name is required — generate it at close based on what the session actually covered. Format: two to four words, noun phrase, specific enough to distinguish from adjacent sessions. Examples: "Cerberus Hardening + NOC Foundation", "Research Question Lock", "E-Shape Specialization Lock". Do not omit the session name.
+
 Rules for the session log:
 - State what actually happened, not what was planned
 - Name specific artifacts, decisions, or infrastructure changes — not vague summaries
-- If something was left unresolved, name it explicitly so Step 3 of the next session open catches it
+- If something was left unresolved, name it explicitly so Step 2 of the next session open catches it
 - Drop the oldest entry when the log exceeds three entries — full history lives in git
+- A locked research question must never appear only in the session log narrative — if it is not in Section 3 and Section 0, the handoff is incomplete regardless of what the log says
 
-**Step 4 — Regenerate only the changed sections**
+**Step 4 — Output changed sections only**
 
-Do not regenerate the entire handoff from scratch. Regenerate only the sections identified in Step 2, plus Section 7. Output them clearly labeled so Darrius can copy them into the existing document.
+Output only the sections identified in Step 2, plus Section 7. Label each section clearly so Darrius can hand them to Claude Code. Do not output the full document — Claude Code applies the edits mechanically.
 
-**Step 5 — Output the commit-ready file**
+**Step 5 — Provide Claude Code prompt**
 
-After Darrius confirms the updated sections are accurate, output the complete updated handoff document in a single code block, ready to save as `azrael-handoff-YYYY-MM-DD.md`.
+Output a complete Claude Code prompt containing:
+1. Instruction to copy ~/Documents/azrael-ops/azrael-handoff-q1-sNNN.md to ~/Documents/azrael-ops/azrael-handoff-q1-s(NNN+1).md
+2. The exact surgical edits for each changed section — quoted text to find, replacement text
+3. The commit command:
+   git add azrael-handoff-q1-s(NNN+1).md && git commit -m "docs: session handoff YYYY-MM-DD S(NNN+1)"
+4. git push
 
-End with the exact commit command:
-```bash
-git add azrael-handoff-YYYY-MM-DD.md && git commit -m "docs: session handoff YYYY-MM-DD"
-```
+Claude Code handles the mechanical file operations. Claude AI handles the content decisions. Do not regenerate the full document in this interface.
 
 **Step 6 — Remind about skill file uploads if applicable**
 
-If any new skill files were produced this session, end with: "Upload [skill file names] to the Azrael Security Claude project before the next session."
+If any new or updated skill files were produced this session, end with: "Upload [skill file names] to the Azrael Security Claude project before the next session."
 
 ---
 
@@ -198,7 +220,7 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 | Section | Name | Changes when |
 |---|---|---|
 | 0 | Stable Reference | A decision is locked, node registry changes, operator rules update |
-| 1 | Who Darrius Is | Identity, brand philosophy, or north star role changes |
+| 1 | Who Darrius Is | Identity, brand philosophy, north star role, or active capability gaps change |
 | 2 | Infrastructure State | Any node's service state, config, or status changes |
 | 3 | Active Operations | C2 state, research status, or ongoing work progresses |
 | 4 | Repository State | Repos created, archived, restructured, or updated |
@@ -210,9 +232,23 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 
 ## What Claude Never Does at Session Close
 
+- Reads skill-06 from memory instead of calling `view` on it
 - Generates the full handoff before the five questions are answered
+- Omits the session name from the Section 7 log entry
 - Summarizes what Darrius said without confirming accuracy
 - Marks infrastructure changes as complete without a verification step having occurred
 - Lets a session close with unverified infrastructure changes still in flight
 - Forgets to include the commit command
 - Starts a new workstream at the end of a session instead of adding it to the backlog
+- Captures a locked research question only in the session log narrative — it must go into Section 3 AND Section 0 or the handoff is incomplete
+- Closes a session where backlog items conflict with session log entries without surfacing the discrepancy
+
+---
+
+## What Claude Never Does at Session Open
+
+- Reads skill-06 from memory instead of calling `view` on it
+- Skips the skill file check because the session focus seems obvious
+- Proceeds into a domain without reading the applicable skill file
+- Assumes the scheduled next session is what Darrius wants to work on without asking
+- Silently skips the "no applicable skill file" confirmation for one-off sessions

@@ -1,3 +1,8 @@
+---
+name: quarterly-review-execution-standard
+description: Use when Darrius initiates a quarterly review or the quarterly review calendar event fires. Governs the ten-question sequence, gap table update, upcoming quarter milestone map, calendar generation, and the Q4 hard rebuild protocol.
+---
+
 # Azrael Security Skill — Quarterly Review Execution Standard
 **Version:** 1.1
 **Date:** 2026-04-01
