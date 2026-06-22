@@ -1,12 +1,12 @@
 ---
 name: job-application-career-filter
-description: Use when Darrius asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning relative to the Azrael Security trajectory.
+description: Use when Darrius asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning relative to the CR1MS0N trajectory.
 ---
 
-# Azrael Security Skill — Job Application & Career Filter
+# CR1MS0N Skill — Job Application & Career Filter
 **Version:** 1.1
 **Date:** 2026-03-19
-**Purpose:** Define a consistent filter and output standard for evaluating job postings and producing application materials aligned with the Azrael Security career trajectory.
+**Purpose:** Define a consistent filter and output standard for evaluating job postings and producing application materials aligned with the CR1MS0N career trajectory.
 **Use when:** Darrius asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning.
 
 ---
@@ -76,7 +76,7 @@ Vulnerability researcher, red team engineer, security researcher at product comp
 | Company | Why It Matters | When to Apply |
 |---|---|---|
 | **runZero** | North star. HD Moore founded. Practitioner-led, research-driven culture that values unconventional thinking. The work — vulnerability research, exposure management, building tools that change how the industry operates — is the draw, not the stack. | Tier 3. Not before container research is public and a talk is delivered. |
-| **Red Siege** | Tim Medin's boutique. Quality-over-volume culture. Craft-building environment. Aligns with Azrael Security philosophy more than any corporate team. | Tier 2-3 boundary. Apply when portfolio has depth, not just certs. |
+| **Red Siege** | Tim Medin's boutique. Quality-over-volume culture. Craft-building environment. Aligns with CR1MS0N philosophy more than any corporate team. | Tier 2-3 boundary. Apply when portfolio has depth, not just certs. |
 | **Sprocket Security** | Continuous automated pentesting. Offensive automation intersection. Good signal for offensive engineering roles. | Tier 2. Apply when Veil automation work is demonstrable. |
 | **Scythe** | Jorge Orchilles. Adversary emulation platform. MITRE ATT&CK deeply integrated. Mythic C2 experience is directly relevant. | Tier 2-3. Apply when Mythic operational experience is documented. |
 | **Nvidia** | Serious internal offensive team doing firmware and GPU driver vulnerability research. Linux-kernel adjacent. Long-term target. | Tier 3. Not before kernel research track has public output. |
@@ -111,7 +111,7 @@ For Tier 1: No cover letter required. A two-paragraph direct note is enough.
 For Tier 2 and 3: A focused cover letter, not a form letter.
 - Open with the most relevant technical artifact. Not "I am excited to apply." Open with what you built or found.
 - Reference a specific aspect of the company's work — not their mission statement, their actual technical work or published research.
-- For runZero specifically: the culture alignment is as important as the technical fit. The cover letter should reflect that Azrael Security is built on the same philosophy — practitioner-led, unconventional, building things that matter.
+- For runZero specifically: the culture alignment is as important as the technical fit. The cover letter should reflect that CR1MS0N is built on the same philosophy — practitioner-led, unconventional, building things that matter.
 - Close with a concrete ask: a conversation, not "I look forward to hearing from you."
 - Maximum one page. If it runs long, cut — do not compress font or margins.
 

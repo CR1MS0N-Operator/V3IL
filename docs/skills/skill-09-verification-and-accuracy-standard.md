@@ -3,7 +3,7 @@ name: verification-and-accuracy-standard
 description: Use in every technical session, automatically. Governs when Claude searches before answering versus answers from training — enforced on all tool behavior, CLI syntax, API details, versions, vendor features, security advisories, and fast-moving field guidance. Prevents stale training data from reaching technical recommendations without a retrieval pass.
 ---
 
-# Azrael Security Skill — Verification and Accuracy Standard
+# CR1MS0N Skill — Verification and Accuracy Standard
 **Version:** 1.0
 **Date:** 2026-03-27
 **Purpose:** Define when Claude retrieves current information before answering versus answers from training, and how to label the difference. Prevents stale training data from reaching technical recommendations without explicit flagging.

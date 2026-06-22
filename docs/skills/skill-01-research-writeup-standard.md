@@ -3,10 +3,10 @@ name: research-writeup-standard
 description: Use when Darrius asks Claude to help write, review, structure, or improve any security research artifact — RE writeup, container boundary finding, CVE analysis, vulnerability research note, or technique documentation. Governs section order, tone, redaction standards, and the publication-ready checklist.
 ---
 
-# Azrael Security Skill — Research Writeup Standard
+# CR1MS0N Skill — Research Writeup Standard
 **Version:** 1.0
 **Date:** 2026-03-19
-**Purpose:** Define the structure, quality bar, and publication standards for all security research writeups produced under the Azrael Security brand.
+**Purpose:** Define the structure, quality bar, and publication standards for all security research writeups produced under the CR1MS0N brand.
 **Use when:** Darrius asks Claude to help write, review, structure, or improve any security research artifact — RE writeup, container boundary finding, CVE analysis, vulnerability research note, or technique documentation.
 
 ---

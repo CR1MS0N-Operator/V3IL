@@ -3,7 +3,7 @@ name: quarterly-review-execution-standard
 description: Use when Darrius initiates a quarterly review or the quarterly review calendar event fires. Governs the ten-question sequence, gap table update, upcoming quarter milestone map, calendar generation, and the Q4 hard rebuild protocol.
 ---
 
-# Azrael Security Skill — Quarterly Review Execution Standard
+# CR1MS0N Skill — Quarterly Review Execution Standard
 **Version:** 1.1
 **Date:** 2026-04-01
 **Purpose:** Define exactly how Claude executes the quarterly review so it produces a recalibrated plan, updated gap table, and rebuilt calendar — not just a summary of what happened.
@@ -113,7 +113,7 @@ Compare actual Q[N] state against where the original 12-month plan expected Darr
 Do not soften trajectory assessments. A quarter that produced less than planned is information, not failure — but it needs to be stated accurately to produce a useful recalibration.
 
 **Step 6 — Generate calendar updates**
-Based on the recalibrated upcoming quarter, generate the new daily and weekly calendar events for the Azrael Security Google Calendar. Format matches the Q1 structure:
+Based on the recalibrated upcoming quarter, generate the new daily and weekly calendar events for the CR1MS0N Google Calendar. Format matches the Q1 structure:
 
 - Recurring weekly blocks for the new track structure
 - Specific daily task events for the first month of the new quarter

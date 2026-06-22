@@ -1,8 +1,8 @@
-# Azrael Security — Skill Files Creation
+# CR1MS0N — Skill Files Creation
 
 ## What We're Building
 
-Skill files are structured markdown documents uploaded to the Azrael Security Claude project. Claude references them automatically in every conversation, giving persistent, consistent behavior without repeating context. They are not Claude Code plugins — they are knowledge files that teach Claude how to work with you specifically.
+Skill files are structured markdown documents uploaded to the CR1MS0N Claude project. Claude references them automatically in every conversation, giving persistent, consistent behavior without repeating context. They are not Claude Code plugins — they are knowledge files that teach Claude how to work with you specifically.
 
 Each skill file should be:
 - Focused on one domain or workflow
@@ -86,14 +86,14 @@ Produce a skill file that defines:
 
 ---
 
-### Skill 5 — Azrael Security Brand & Communication Standard
+### Skill 5 — CR1MS0N Brand & Communication Standard
 
 **Purpose:** All public-facing content (GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, personal site copy) should follow a consistent voice and positioning.
 
 Produce a skill file that defines:
-- Brand positioning: Red Team Infrastructure Engineer + Vulnerability Researcher. Building Azrael Security. Quality over ease.
+- Brand positioning: Red Team Infrastructure Engineer + Vulnerability Researcher. Building CR1MS0N. Quality over ease.
 - Voice: direct, technically precise, no filler, no hype. Write like a practitioner for practitioners.
-- What Azrael Security is and is not: it is a professional offensive security research brand, not a generic "cybersecurity" brand
+- What CR1MS0N is and is not: it is a professional offensive security research brand, not a generic "cybersecurity" brand
 - GitHub README standard: executive summary first, then architecture/state, then usage, then honest status (no "coming soon" placeholders)
 - What to never write publicly: inflated claims about tool maturity, CTF rankings as primary credential, vague "passionate about security" language
 - Research publication framing: infrastructure as the differentiator (live C2, real honeypot data, WireGuard mesh) — not "I completed X challenges"
@@ -113,7 +113,7 @@ Each skill file should be saved as:
 
 Header format for each file:
 ```
-# Azrael Security Skill — [Name]
+# CR1MS0N Skill — [Name]
 **Version:** 1.0
 **Date:** 2026-03-19
 **Purpose:** [one sentence]

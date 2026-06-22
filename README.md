@@ -74,7 +74,7 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
     └───────────────────┘
 ```
 
-**WireGuard topology:** Hub-and-spoke via Cerberus. Cerberus is the always-on edge node and mesh hub. NightForge, Tairn, and Hermes peer exclusively through Cerberus. Hairpin routing enabled for node-to-node communication across the mesh. NightForge also hosts two VMs (Tairn, Hermes) under libvirt NAT (`192.168.122.0/24`), accessible via WireGuard IPs on the mesh.
+**WireGuard topology:** Hub-and-spoke via Cerberus. Cerberus is the always-on edge node and mesh hub. NightForge, Tairn, and Hermes peer exclusively through Cerberus. Hairpin routing enabled for node-to-node communication across the mesh. NightForge also hosts two VMs (Tairn, Hermes) under libvirt NAT (`10.10.10.0/24`), accessible via WireGuard IPs on the mesh.
 
 ---
 
@@ -249,10 +249,10 @@ Alpine Linux 3.23.3 VM hosted on NightForge via libvirt NAT. Serves as the C2 eg
 - **Role:** C2 redirector — terminates external-facing TLS, proxies to Mythic on Tairn
 - **OS:** Alpine Linux (minimal, ~150MB footprint)
 - **Proxy:** Nginx reverse proxy (TLS termination + stream forwarding)
-- **Networking:** Nginx listens on port 443, upstream to `10.0.0.4:7443`
+- **Networking:** Nginx listens on port 443, upstream to `10.10.10.4:7443`
 - **Disposable:** Full VM state captured in libvirt XML + Terraform config; rebuild in <2 minutes
 - **Lifecycle:** Static config in `/etc/nginx/nginx.conf`, `/etc/wireguard/wg0.conf`, `/etc/network/interfaces`
-- **Access:** WireGuard-only (`10.0.0.5`). No direct LAN path.
+- **Access:** WireGuard-only (`10.10.10.5`). No direct LAN path.
 - **Monitoring:** Netdata agent reporting to Cerberus
 
 ---
@@ -262,7 +262,7 @@ Alpine Linux 3.23.3 VM hosted on NightForge via libvirt NAT. Serves as the C2 eg
 | Control | Implementation |
 |---------|---------------|
 | Network segmentation | WireGuard mesh — no node directly reachable from WAN |
-| C2 access control | iptables DOCKER-USER — port 7443 restricted to `10.0.0.0/24` |
+| C2 access control | iptables DOCKER-USER — port 7443 restricted to `10.10.10.0/24` |
 | C2 redirector | Hermes — disposable Alpine Nginx proxy between WAN and Mythic |
 | Traffic flow isolation | Hub-and-spoke mesh; all spoke-to-spoke traffic routes through Cerberus |
 | Container isolation | Rootless Podman Quadlets (Cerberus), Docker (Tairn — Mythic requirement) |
@@ -385,7 +385,7 @@ ansible-playbook playbooks/hermes.yml -i inventories/hermes.ini
 
 ```bash
 # Apply configuration changes
-ssh tairn  # 10.0.0.4 via WireGuard
+ssh tairn  # 10.10.10.4 via WireGuard
 sudo nixos-rebuild switch --show-trace
 
 # Config lives at /etc/nixos/configuration.nix
@@ -406,7 +406,7 @@ sudo nixos-rebuild switch --show-trace
   1. terraform apply        → VM provisioned on NightForge libvirt
   2. Alpine setup-alpine     → OS installed
   3. ansible-playbook       → Nginx + WireGuard + Netdata configured
-  4. wg-quick up            → Connects to Veil mesh (10.0.0.5)
+  4. wg-quick up            → Connects to Veil mesh (10.10.10.5)
   5. ── active ──           → Redirecting C2 traffic for Tairn
   6. terraform destroy      → VM destroyed, redirector burned
   7. Return to step 1       → New VM, new SSH keys, new WireGuard keys
@@ -523,7 +523,7 @@ sudo wg show
 # 2. Add peer to Cerberus wg0.conf:
 #   [Peer]
 #   PublicKey = <new-node-pubkey>
-#   AllowedIPs = 10.0.0.x/32
+#   AllowedIPs = 10.10.10.x/32
 # 3. Restart WireGuard on Cerberus: sudo systemctl restart wg-quick@wg0
 # 4. Configure new node to peer with Cerberus
 
@@ -663,7 +663,7 @@ Active gaps tracked in the Veil infrastructure. See `docs/known-gaps.md` for ful
 | Homepage Netdata service widgets show identical data | Low | D1 | Low |
 | SearXNG autocomplete not working | Low | D1 | Low |
 | Scan queue has no worker consuming the queue | Low | 4 | High |
-| No network segmentation (VLANs) — flat 192.168.1.0/24 | Enhancement | 6 | Very High |
+| No network segmentation (VLANs) — flat 10.10.20.0/24 | Enhancement | 6 | Very High |
 
 ### Gap Detail
 
@@ -680,10 +680,10 @@ Netdata sees host metrics but container-level metrics are invisible. Podman sock
 Blocked IPs accumulate in the scan queue but no worker performs Nuclei recon. Planned: `nightforge-recon.timer` every 5 minutes running `recon-worker.sh`.
 
 **Gap 5 — NightForge Not Integrated into Centralized Monitoring**
-NightForge is connected to the mesh (10.0.0.3) but not reporting to the NOC dashboard. Planned: Netdata agent, Homepage service cards, centralized log aggregation.
+NightForge is connected to the mesh (10.10.10.3) but not reporting to the NOC dashboard. Planned: Netdata agent, Homepage service cards, centralized log aggregation.
 
 **Gap 6 — No Network Segmentation (VLANs)**
-Network is flat 192.168.1.0/24. Proposed zones: DMZ (honeypots), Ops (services), Red/C2 (NightForge, Mythic), Management (OOB). Prerequisites: managed switch, pfSense/OPNsense router.
+Network is flat 10.10.20.0/24. Proposed zones: DMZ (honeypots), Ops (services), Red/C2 (NightForge, Mythic), Management (OOB). Prerequisites: managed switch, pfSense/OPNsense router.
 
 ### Resolved Gaps
 
@@ -699,7 +699,7 @@ The following gaps were closed during Phase S1 (Service Cleanup):
 - NightForge DNS single point of failure → Cloudflare fallback DNS
 - Cerberus hostname b-k3s → renamed to cerberus
 - Tairn/Mythic C2 deployment → NixOS + Mythic + Poseidon deployed
-- Subnet migration → all configs updated from 192.168.0.x to 192.168.1.x
+- Subnet migration → all configs updated to 10.10.20.0/24 after ISP change
 
 ---
 

@@ -3,7 +3,7 @@ name: session-open-close-protocol
 description: Use at the start and end of every session, automatically. Governs handoff document loading, skill file reads, backlog review, session close five-question sequence, and Claude Code handoff. This skill is read unconditionally — every session, no exceptions.
 ---
 
-# Azrael Security Skill — Session Open / Close Protocol
+# CR1MS0N Skill — Session Open / Close Protocol
 **Version:** 1.5
 **Date:** 2026-03-27
 **Purpose:** Define exactly what happens at the start and end of every Claude session to ensure context is loaded correctly, work is captured, and the handoff document stays current. Also governs session scope discipline and the Claude Code session workflow.
@@ -16,7 +16,7 @@ description: Use at the start and end of every session, automatically. Governs h
 Every session starts with this sequence before any technical work begins.
 
 **Step 1 — Confirm the handoff document is loaded**
-The handoff document (`azrael-handoff-YYYY-MM-DD.md`) is attached to the Azrael Security Claude project and should be present in context. Claude reads it fully before responding to any technical request. If it is not present or appears outdated, flag it immediately: "The handoff document in this project is dated [date] — is there a more recent version to upload before we start?"
+The handoff document (`azrael-handoff-YYYY-MM-DD.md`) is attached to the CR1MS0N Claude project and should be present in context. Claude reads it fully before responding to any technical request. If it is not present or appears outdated, flag it immediately: "The handoff document in this project is dated [date] — is there a more recent version to upload before we start?"
 
 **Step 1b — Read applicable skill files**
 After confirming the handoff is loaded, call `view` on this file (skill-06) via the view tool. This is the only unconditional read — it happens every session without exception. Running skill-06 from memory is not equivalent and is the failure mode this step exists to prevent. Also read skill-09 (verification-and-accuracy-standard) unconditionally — it governs information sourcing behavior for all technical work and applies regardless of session focus.
@@ -189,7 +189,7 @@ Claude Code handles the mechanical file operations. Claude AI handles the conten
 
 **Step 6 — Remind about skill file uploads if applicable**
 
-If any new or updated skill files were produced this session, end with: "Upload [skill file names] to the Azrael Security Claude project before the next session."
+If any new or updated skill files were produced this session, end with: "Upload [skill file names] to the CR1MS0N Claude project before the next session."
 
 ---
 
