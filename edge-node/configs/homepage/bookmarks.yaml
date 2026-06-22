@@ -10,9 +10,9 @@
         - icon: /icons/netdata.png
           href: https://learn.netdata.cloud/
 - Local Lab:
-    - Nyx Gitea:
+    - Veil Gitea:
         - icon: /icons/gitea.png
-          href: https://git.lan/foreverlx/nyx
-    - Nyx Backups:
+          href: https://git.lan/CR1MS0N-Operator/veil
+    - Veil Backups:
         - icon: /icons/gitea.png
           href: https://git.lan/foreverlx/backups

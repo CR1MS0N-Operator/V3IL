@@ -1,5 +1,5 @@
 # offsec-workstation — NightForge Zsh Configuration
-# Azrael Security | ForeverLX
+# CR1MS0N Security | CR1MS0N-Operator
 
 # ========== OPERATOR TERMINAL ==========
 ~/.config/operator-terminal/operator-init.sh

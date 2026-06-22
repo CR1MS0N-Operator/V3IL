@@ -31,10 +31,10 @@ tail -20 /var/nightforge/cowrie-logs/cowrie.json | jq 'select(.eventid == "cowri
 
 ```bash
 # LAN access
-ssh foreverlx@192.168.0.251 -p 2121
+ssh operator@10.10.10.1 -p 2121
 
 # Remote access via Tailscale
-ssh foreverlx@<tailscale-ip> -p 2121
+ssh operator@<tailscale-ip> -p 2121
 ```
 
 Port 22 is Cowrie. Do NOT attempt to SSH on port 22 — all connections are logged.
@@ -143,7 +143,7 @@ nuclei -u 1.2.3.4 -rl 10 -c 5 -silent
 `~/backup-script.sh` runs automatically via cron:
 - Copies Vaultwarden SQLite database to `~/backups/vaultwarden/`
 - Commits with timestamp
-- Pushes to `ssh://git@192.168.0.251:2222/foreverlx/backups.git`
+- Pushes to `ssh://git@10.10.10.1:2222/CR1MS0N-Operator/backups.git`
 
 ### Manual Backup
 
@@ -157,7 +157,7 @@ cat ~/backup.log
 
 ```bash
 # Check latest commit
-curl -s http://192.168.0.251:3000/foreverlx/backups | grep "commit"
+curl -s http://10.10.10.1:3000/CR1MS0N-Operator/backups | grep "commit"
 ```
 
 ---
@@ -190,7 +190,7 @@ Performs:
 After reboot, verify:
 
 ```bash
-# Core Nyx services (Cerberus)
+# Core Veil services (Cerberus)
 systemctl --user status nightforge-cowrie nightforge-shield
 
 # System services

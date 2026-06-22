@@ -1,10 +1,10 @@
 # Veil
 
-**Azrael Security — Offensive Security Infrastructure**
+**CR1MS0N Security — Offensive Security Infrastructure**
 
-Built and operated by [ForeverLX](https://github.com/ForeverLX) | Azrael Security™
+Built and operated by [CR1MS0N-Operator](https://github.com/CR1MS0N-Operator) | CR1MS0N Security™
 
-> Veil is the operational infrastructure layer connecting all Azrael Security nodes. It is not a simulation environment — it is a production-grade offensive security homelab built for real adversary emulation, threat detection, and red team infrastructure research.
+> Veil is the operational infrastructure layer connecting all CR1MS0N Security nodes. It is not a simulation environment — it is a production-grade offensive security homelab built for real adversary emulation, threat detection, and red team infrastructure research.
 
 ---
 
@@ -12,11 +12,11 @@ Built and operated by [ForeverLX](https://github.com/ForeverLX) | Azrael Securit
 
 | Node | Role | OS | WireGuard IP | LAN IP |
 |------|------|----|-------------|--------|
-| **Cerberus** | Edge node — services, detection, honeypot | Arch Linux (headless) | `10.0.0.1` (hub) | `192.168.1.251` (static) |
-| **NightForge** | Operator workstation — tooling, compute, development | Arch Linux + Niri WM | `10.0.0.3` | `192.168.1.156` (DHCP) |
-| **Tairn** | Attack node — Mythic C2, agent staging, lab targets | NixOS 24.11 (declarative) | `10.0.0.4` | `192.168.122.230` (libvirt NAT) |
-| **Hermes** | Redirector VM — C2 egress, traffic forwarding, disposable | Alpine Linux 3.23.3 | `10.0.0.5` | `192.168.122.200` (libvirt NAT) |
-| **iPhone** | Mobile WireGuard client | iOS | `10.0.0.2` | — |
+| **Cerberus** | Edge node — services, detection, honeypot | Arch Linux (headless) | `10.10.10.1` (hub) | `10.10.10.251` (static) |
+| **NightForge** | Operator workstation — tooling, compute, development | Arch Linux + Niri WM | `10.10.10.3` | `10.10.10.156` (DHCP) |
+| **Tairn** | Attack node — Mythic C2, agent staging, lab targets | NixOS 24.11 (declarative) | `10.10.10.4` | `10.10.10.230` (libvirt NAT) |
+| **Hermes** | Redirector VM — C2 egress, traffic forwarding, disposable | Alpine Linux 3.23.3 | `10.10.10.5` | `10.10.10.200` (libvirt NAT) |
+| **iPhone** | Mobile WireGuard client | iOS | `10.10.10.2` | — |
 
 All inter-node communication runs exclusively over a WireGuard hub-and-spoke mesh. No node is directly reachable from WAN.
 
@@ -29,8 +29,8 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
                            │
                     ┌──────▼──────┐
                     │  Cerberus   │
-                    │ 10.0.0.1    │
-                    │ 192.168.1.x │
+                    │ 10.10.10.1    │
+                    │ 10.10.10.x │
                     │             │
                     │ Cowrie      │
                     │ Suricata    │
@@ -41,14 +41,12 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
                     │ Netdata     │
                     │ Homepage    │
                     └──────┬──────┘
-                           │ WireGuard mesh (10.0.0.0/24)
+                           │ WireGuard mesh (10.10.10.0/24)
                            │
               ┌────────────┼────────────────┐
               │            │                 │
-    ┌─────────▼────────┐  │     ┌───────────▼───────────┐
-    │   NightForge      │  │     │       Tairn            │
-    │   10.0.0.3        │  │     │       10.0.0.4         │
-    │   192.168.1.x     │  │     │   192.168.122.x        │
+    │   10.10.10.3        │  │     │       10.10.10.4         │
+    │   10.10.10.x     │  │     │   10.10.10.x        │
     │                   │  │     │   (libvirt NAT,        │
     │ Operator WS       │  │     │    NightForge-local)   │
     │ Niri WM           │  │     │                        │
@@ -60,8 +58,8 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
     │  libvirt host     │  │     └────────────────────────┘
     │  ┌────────────────┴──┴────┐
     │  │    Hermes              │
-    │  │    10.0.0.5            │
-    │  │    192.168.122.200     │
+    │  │    10.10.10.5            │
+    │  │    10.10.10.200     │
     │  │    (libvirt NAT,       │
     │  │     NightForge-local)  │
     │  │                        │
@@ -84,52 +82,52 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
 
 The Veil network spans two physical subnets bridged by WireGuard:
 
-### Physical Network (192.168.1.0/24)
+### Physical Network (10.10.10.0/24)
 
 ```
-  Internet ─── Home Router ─── LAN (192.168.1.0/24)
+  Internet ─── Home Router ─── LAN (10.10.10.0/24)
                                    │
                     ┌──────────────┴──────────────┐
                     │                              │
-          Cerberus (192.168.1.251)      NightForge (192.168.1.156)
+          Cerberus (10.10.10.251)      NightForge (10.10.10.156)
           Edge node, always-on          Operator workstation
 ```
 
-### Virtual Network (192.168.122.0/24 — libvirt NAT on NightForge)
+### Virtual Network (10.10.11.0/24 — libvirt NAT on NightForge)
 
 ```
                      NightForge
                      ┌──────────────────┐
                      │  virbr0 bridge   │
-                     │ 192.168.122.1    │
+                     │ 10.10.11.1    │
                      └──┬───────────┬───┘
                         │           │
                    Tairn VM    Hermes VM
-                   122.230     122.200
+                   10.10.11.230     10.10.11.200
                    NixOS       Alpine
 ```
 
-### WireGuard Mesh (10.0.0.0/24)
+### WireGuard Mesh (10.10.10.0/24)
 
 ```
-       Cerberus (10.0.0.1) ─── hub, always-on
+       Cerberus (10.10.10.1) ─── hub, always-on
            │     │     │
-           │     │     └── Hermes (10.0.0.5) — C2 redirector
+           │     │     └── Hermes (10.10.10.5) — C2 redirector
            │     │
-           │     └──────── Tairn (10.0.0.4) — Mythic C2
+           │     └──────── Tairn (10.10.10.4) — Mythic C2
            │
-           └────────────── NightForge (10.0.0.3) — operator workstation
+           └────────────── NightForge (10.10.10.3) — operator workstation
 
-           iPhone (10.0.0.2) — mobile client (connects to Cerberus only)
+           iPhone (10.10.10.2) — mobile client (connects to Cerberus only)
 ```
 
 ### Mesh Rules
 
 - All spoke-to-spoke traffic routes through Cerberus (hairpin forwarding)
 - Tairn initiates to Cerberus only — no endpoint configured on Cerberus for Tairn
-- Cerberus cannot reach `192.168.122.x` — libvirt NAT is NightForge-local only
+- Cerberus cannot reach `10.10.11.x` — libvirt NAT is NightForge-local only
 - Hermes and Tairn are WireGuard-only accessible; no direct LAN path
-- NightForge SSH config uses WireGuard IPs (`10.0.0.4`, `10.0.0.5`), not libvirt NAT IPs
+- NightForge SSH config uses WireGuard IPs (`10.10.10.4`, `10.10.10.5`), not libvirt NAT IPs
 
 <!-- ![Network Topology](docs/diagrams/topology.png) -->
 
@@ -141,26 +139,22 @@ How traffic routes through the Veil mesh from each node's perspective.
 
 ### Operator to C2 (NightForge → Tairn)
 
-```
-NightForge ──wg0── Cerberus ──wg0 (hairpin)── Tairn:7443
-   10.0.0.3       10.0.0.1                       10.0.0.4
+   10.10.10.3       10.10.10.1                       10.10.10.4
                     │
             nftables forward: iif "wg0" oif "wg0" accept
             rp_filter=0 on wg0
 ```
 
-The Mythic C2 web UI (`https://10.0.0.4:7443`) is accessed exclusively over WireGuard. Tairn's DOCKER-USER iptables chain restricts port 7443 to `10.0.0.0/24`.
+The Mythic C2 web UI (`https://10.10.10.4:7443`) is accessed exclusively over WireGuard. Tairn's DOCKER-USER iptables chain restricts port 7443 to `10.10.10.0/24`.
 
 ### C2 Agent Callback (Internet → Hermes → Tairn)
 
-```
-  Agent ─── Internet ─── Home Router ─── Cerberus (hairpin) ─── NightForge (libvirt NAT)
-   WAN                                     10.0.0.1              192.168.122.1
+   WAN                                     10.10.10.1              10.10.11.1
                                            port forward             │
-                                                               Hermes (10.0.0.5)
+                                                               Hermes (10.10.10.5)
                                                                Nginx reverse proxy
                                                                    │
-                                                              Tairn (10.0.0.4)
+                                                              Tairn (10.10.10.4)
                                                               Mythic C2 (7443)
 ```
 
@@ -233,9 +227,9 @@ Primary operator environment. Arch Linux with Niri Wayland compositor. All offen
 - **Shell:** Zsh + Starship
 - **VM management:** libvirt (Tairn, Hermes hosted here as NAT VMs)
 - **Local AI:** Ollama (`qwen2.5:14b` for RAG pipeline)
-- **Dashboard:** beszel agent (azrael-ops-dashboard) reporting to Cerberus on port 8489
+- **Dashboard:** beszel agent (CR1MS0N-ops-dashboard) reporting to Cerberus on port 8489
 
-See [nightforge](https://github.com/ForeverLX/nightforge) for full workstation configuration and operator framework.
+See [nightforge](https://github.com/CR1MS0N-Operator/nightforge) for full workstation configuration and operator framework.
 
 ### Tairn — Attack Node
 
@@ -244,8 +238,8 @@ NixOS 24.11 VM hosted on NightForge via libvirt NAT. Declarative configuration �
 - **C2 framework:** Mythic (Docker-based)
 - **Primary agent:** Poseidon (Go, Linux)
 - **C2 profile:** HTTP C2
-- **Operation:** Operation Azrael
-- **Access:** WireGuard-only (`10.0.0.4`). Mythic UI locked to mesh via DOCKER-USER iptables chain
+- **Operation:** Operation CR1MS0N
+- **Access:** WireGuard-only (`10.10.10.4`). Mythic UI locked to mesh via DOCKER-USER iptables chain
 - **Courses:** Certified Red Team Analyst (CRTA), Certified Red Team Infrastructure Developer (CRT-ID) via CyberWarfare Labs — all technique work documented with MITRE ATT&CK mapping
 
 ### Hermes — Redirector VM
@@ -304,13 +298,11 @@ NOC data is sourced from:
 - NOC scripts in `~/scripts/noc/`: `wg-status.sh`, `cowrie-status.sh`, `suricata-status.sh`, `nftables-status.sh`
 - Data served by Caddy on port 8484 (`/noc-status/` file server)
 
-### azrael-ops-dashboard
-
-The centralized operations dashboard (beszel-based) runs on NightForge and is proxied through Cerberus Caddy:
+### CR1MS0N-ops-dashboard
 
 | Service | Port | Endpoint |
 |---------|------|----------|
-| azrael-ops-dashboard | 9090 | `10.0.0.3:9090` via Cerberus Caddy proxy `:8489` |
+| CR1MS0N-ops-dashboard | 9090 | `10.10.10.3:9090` via Cerberus Caddy proxy `:8489` |
 
 This provides:
 - Multi-node system metrics (CPU, RAM, disk, uptime)
@@ -342,7 +334,7 @@ Veil uses a hybrid deployment model combining declarative configuration, infrast
 | Node | Method | Tooling | Provisioning |
 |------|--------|---------|-------------|
 | Cerberus | Manual + Podman Quadlets | systemd, nftables, Caddy | Chromebook (ARM) — limited IaC support |
-| NightForge | Manual + dotfiles | Niri, Podman, Neovim, Zsh | Desktop, see [nightforge](https://github.com/ForeverLX/nightforge) |
+| NightForge | Manual + dotfiles | Niri, Podman, Neovim, Zsh | Desktop, see [nightforge](https://github.com/CR1MS0N-Operator/nightforge) |
 | Tairn | Declarative | NixOS `configuration.nix` | `nixos-rebuild switch` — full OS state in VCS |
 | Hermes | IaC | Terraform + libvirt XML | `terraform apply` + Alpine install |
 
@@ -717,5 +709,5 @@ All tooling is deployed on infrastructure owned and operated by the author for a
 
 ---
 
-**Author:** Darrius Grate (ForeverLX) | Azrael Security™
+**Author:** Darrius Grate (CR1MS0N-Operator) | CR1MS0N Security™
 **License:** MIT

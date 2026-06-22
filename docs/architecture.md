@@ -1,8 +1,8 @@
-# Nyx Architecture
+# Veil Architecture
 
 ## System Overview
 
-Nyx operates as a two-tier architecture:
+Veil operates as a two-tier architecture:
 
 - **Edge Node (Cerberus):** Google Chromebook running Arch Linux. Handles all sensor, detection, blocking, and homelab services. Constrained to 8GB RAM.
 - **NightForge workstation:** Workstation running Arch Linux (32GB RAM). Handles Mythic C2, LLM inference, and heavy compute.
@@ -20,7 +20,7 @@ Nyx operates as a two-tier architecture:
                        │
           ─────────────────────────
           │        LAN            │
-          │   192.168.0.0/24      │
+          │   10.10.10.0/24       │
           │                       │
     ┌─────┴──────┐         ┌──────┴──────┐
     │  Cerberus     │         │  NightForge workstation   │
@@ -35,8 +35,8 @@ Nyx operates as a two-tier architecture:
 
 | Interface | Address | Role |
 |---|---|---|
-| enp0s21f0u2c2 | 192.168.0.251/24 | Primary LAN (USB Ethernet) |
-| wg0 | 10.0.0.1/24 | WireGuard VPN mesh |
+| enp0s21f0u2c2 | 10.10.10.1/24 | Primary LAN (USB Ethernet) |
+| wg0 | 10.10.10.1/24 | WireGuard VPN mesh |
 | tailscale0 | 100.x.x.x/32 | Tailscale remote access |
 | podman0 | 10.88.0.1/16 | Container bridge |
 

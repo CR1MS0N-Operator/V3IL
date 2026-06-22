@@ -1,10 +1,10 @@
 # Services Reference
 
-All services running on the Cerberus edge node (192.168.0.251).
+All services running on the Cerberus edge node (10.10.10.1).
 
 ---
 
-## Nyx Core Services (Running on Cerberus)
+## Veil Core Services (Running on Cerberus)
 
 ### Suricata IDS
 
@@ -79,7 +79,7 @@ journalctl --user -u nightforge-shield -f
 | Unit | container-pihole.service |
 | Network mode | host |
 | Ports | 53 (DNS), 80/443 (web UI) |
-| Web UI | http://192.168.0.251/admin |
+| Web UI | http://10.10.10.1/admin |
 
 Pi-hole provides local DNS resolution and network-wide ad/tracker blocking.
 
@@ -99,7 +99,7 @@ sudo systemctl status container-pihole
 | Manager | hand-written systemd unit (system) |
 | Unit | container-gitea.service |
 | Ports | 3000 (web), 2222 (SSH) |
-| Web UI | http://192.168.0.251:3000 |
+| Web UI | http://10.10.10.1:3000 |
 | Data | /srv/gitea/ |
 
 Private Git server. Hosts internal repos including the automated Vaultwarden backup repo.
@@ -119,7 +119,7 @@ sudo systemctl status container-gitea
 | Manager | podman generate systemd (system) — CONFLICTED |
 | Active container | vaultwarden (user), port 8081 |
 | System unit | container-vaultwarden.service, port 8080 |
-| Web UI | http://192.168.0.251:8081 |
+| Web UI | http://10.10.10.1:8081 |
 | Data | /srv/vaultwarden/ |
 
 > ⚠️ **Gap (Critical):** Two competing service definitions exist:
@@ -144,7 +144,7 @@ podman logs vaultwarden
 | Image | docker.io/gethomepage/homepage:latest |
 | Manager | Manual podman start (no systemd unit) |
 | Port | 8282 |
-| Web UI | http://192.168.0.251:8282 |
+| Web UI | http://10.10.10.1:8282 |
 
 > ⚠️ **Gap:** No auto-restart on reboot. Must be manually started after each reboot:
 > ```bash
@@ -160,7 +160,7 @@ podman logs vaultwarden
 |---|---|
 | Manager | systemd |
 | Port | 19999 |
-| Web UI | http://192.168.0.251:19999 |
+| Web UI | http://10.10.10.1:19999 |
 
 Real-time monitoring of CPU, RAM, containers, Suricata rule hits, and network throughput.
 
@@ -172,7 +172,7 @@ Real-time monitoring of CPU, RAM, containers, Suricata rule hits, and network th
 |---|---|
 | Manager | systemd |
 | Port | 9090 |
-| Web UI | http://192.168.0.251:9090 |
+| Web UI | http://10.10.10.1:9090 |
 
 Metrics collection. Configured to scrape local exporters.
 

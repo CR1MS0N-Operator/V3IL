@@ -1,6 +1,6 @@
 # Known Gaps
 
-Current gaps in the Nyx / Cerberus edge node deployment as of 2026-03-13.
+Current gaps in the Veil / Cerberus edge node deployment as of 2026-03-13.
 
 ---
 
@@ -88,7 +88,7 @@ consumes the queue.
 
 ---
 
-### Gap 5 — NightForge Not Integrated into Nyx Infrastructure
+### Gap 5 — NightForge Not Integrated into Veil Infrastructure
 **Severity:** Medium
 **Phase:** N1
 
@@ -105,8 +105,7 @@ complete environment including:
 - 60+ documented keybinds, screenshot system, Obsidian integration
 - Active engage/ directory with archive, current, templates, test-lab
 
-WireGuard is connected (10.0.0.3) but NightForge is not yet integrated
-into the Nyx NOC dashboard or centralized monitoring.
+into the Veil NOC dashboard or centralized monitoring.
 
 **Planned:**
 - Netdata agent on NightForge reporting to Cerberus
@@ -120,7 +119,7 @@ into the Nyx NOC dashboard or centralized monitoring.
 **Phase:** 6 (long-term)
 
 **Description:**
-Network is flat — all devices on 192.168.0.0/24. Mature red team
+Network is flat — all devices on 10.10.10.0/24. Mature red team
 infrastructure requires segmented VLANs with defined trust boundaries.
 
 **Proposed zones:**
@@ -138,7 +137,7 @@ infrastructure requires segmented VLANs with defined trust boundaries.
 | Gap | Severity | Phase | Effort |
 |---|---|---|---|
 | Gap 3 — Netdata container metrics | Medium | D1 | Low |
-| Gap 5 — NightForge Nyx integration | Medium | N1 | Medium |
+| Gap 5 — NightForge Veil integration | Medium | N1 | Medium |
 | Gap 1 — Duplicate widget data | Low | D1 | Low |
 | Gap 2 — SearXNG autocomplete | Low | D1 | Low |
 | Gap 4 — Scan queue worker | Low | 4 | High |

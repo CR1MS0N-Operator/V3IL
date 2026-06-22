@@ -1,5 +1,5 @@
 # Tairn — Zsh Configuration
-# Azrael Security | Mythic C2 + CTF/Training Lab Node
+# CR1MS0N Security | Mythic C2 + CTF/Training Lab Node
 
 # ========== ZINIT PLUGIN MANAGER ==========
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
