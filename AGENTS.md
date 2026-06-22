@@ -1,5 +1,8 @@
-# Azrael Security — Global Agent Rules
+# veil — Infrastructure Agent Rules
 
+## Purpose
+Infrastructure configuration repository for Veil (WireGuard mesh + Alpine redirector). No application code.
+All changes are configuration files — treat every edit as production infra.
 # Veil Infrastructure — Agent Rules
 
 ## Scope
