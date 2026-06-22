@@ -103,7 +103,7 @@ Primary interface is USB Ethernet (AX88179 adapter):
 
 ```
 Interface: enp0s21f0u2c2
-IP: 192.168.0.251/24 (static via NetworkManager)
+IP: 10.10.10.1/24 (static via NetworkManager)
 ```
 
 ### WireGuard
@@ -112,7 +112,7 @@ WireGuard mesh connects the edge node to NightForge workstation (workstation):
 
 ```
 Interface: wg0
-Address: 10.0.0.1/24
+Address: 10.10.10.1/24
 ```
 
 Config at `/etc/wireguard/wg0.conf`.

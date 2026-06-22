@@ -139,7 +139,7 @@ was manually modified
 ---
 
 ### Issue: WireGuard hub-and-spoke peers cannot reach each other through hub
-**Symptom:** NightForge cannot ping Tairn via 10.0.0.4, packets arrive at
+**Symptom:** NightForge cannot ping Tairn via 10.10.10.4, packets arrive at
 Cerberus but are never forwarded. tcpdump on wg0 shows requests with no replies.
 **Root cause:** Two compounding issues:
 1. Kernel rp_filter (Reverse Path Filter) drops packets that arrive and would
@@ -150,7 +150,7 @@ Cerberus but are never forwarded. tcpdump on wg0 shows requests with no replies.
 **Resolution:**
 - Set rp_filter=0 on wg0 and all interfaces via /etc/sysctl.d/99-wireguard.conf
 - Add `iif "wg0" oif "wg0" accept` to nftables forward chain
-- Add explicit host routes for each spoke: `ip route add 10.0.0.x/32 dev wg0`
+- Add explicit host routes for each spoke: `ip route add 10.10.10.x/32 dev wg0`
   via PostUp in wg0.conf on Cerberus
 **Lesson:** WireGuard hub-and-spoke requires explicit kernel configuration for
 hairpin forwarding. rp_filter is a legitimate security control — document the
@@ -162,8 +162,7 @@ risk that rp_filter normally guards against.
 ### Issue: Tairn WireGuard peer config drift after reboot
 
 **Symptom:** Cerberus wg show shows Tairn endpoint as 192.168.1.145:50555 (NightForge's LAN IP), no handshake
-**Root cause:** Stale endpoint cached from prior session, wrong IP written into Cerberus wg0.conf. Tairn config also had allowedIPs = 10.0.0.0/24 on Cerberus peer instead of 10.0.0.1/32, causing route conflict
-**Resolution:** Corrected Cerberus wg0.conf — removed Tairn endpoint entirely (Tairn initiates). Corrected Tairn configuration.nix — 10.0.0.1/32 on Cerberus peer, removed direct endpoint from NightForge peer
+**Resolution:** Corrected Cerberus wg0.conf — removed Tairn endpoint entirely (Tairn initiates). Corrected Tairn configuration.nix — 10.10.10.1/32 on Cerberus peer, removed direct endpoint from NightForge peer
 **Lesson:** In hub-and-spoke, spokes initiate to hub only. Hub should have no endpoint for spokes — WireGuard learns it dynamically. Never set a spoke-to-spoke direct endpoint.
 
 ---
@@ -247,7 +246,7 @@ always use Quadlets for new deployments
    WireGuard-only per nftables access model, not accessible via LAN
 2. Remote URL had `foreverlx` as SSH user — Gitea requires `git` as the
    system SSH user regardless of account name
-**Resolution:** SSH config Host git.lan must use HostName 10.0.0.1 (WireGuard).
+**Resolution:** SSH config Host git.lan must use HostName 10.10.10.1 (WireGuard).
 Remote URL format: ssh://git@git.lan:2222/<account>/<repo>.git
 **Lesson:** Gitea SSH user is always `git`. WireGuard-only services are not
 reachable via LAN IP — use WireGuard IP in SSH config HostName.
@@ -317,7 +316,7 @@ systemd.services.docker-firewall = {
         sleep 1
       done
       ${pkgs.iptables}/bin/iptables -I DOCKER-USER 1 -p tcp --dport 7443 -j DROP
-      ${pkgs.iptables}/bin/iptables -I DOCKER-USER 1 -s 10.0.0.0/24 -p tcp --dport 7443 -j ACCEPT
+      ${pkgs.iptables}/bin/iptables -I DOCKER-USER 1 -s 10.10.10.0/24 -p tcp --dport 7443 -j ACCEPT
     '';
   };
 };
@@ -329,11 +328,11 @@ Docker-specific firewall rules. Always use a post-Docker oneshot service.
 ---
 
 ### Issue: Mythic GraphQL endpoint returns 301
-**Symptom:** POST to `https://10.0.0.4:7443/graphql` returns 301 Moved Permanently
+**Symptom:** POST to `https://10.10.10.4:7443/graphql` returns 301 Moved Permanently
 **Root cause:** Mythic nginx requires trailing slash on the GraphQL endpoint.
 Without it nginx redirects, which breaks POST requests (redirect changes POST
 to GET).
-**Resolution:** Use `https://10.0.0.4:7443/graphql/` (trailing slash). If using
+**Resolution:** Use `https://10.10.10.4:7443/graphql/` (trailing slash). If using
 curl, add -L to follow redirects during debugging but fix the URL in code.
 **Lesson:** Always verify GraphQL endpoint URLs with a direct curl before
 writing collector code. Trailing slash requirements are nginx config-specific.

@@ -40,8 +40,7 @@ The following ranges are never blocked regardless of score:
 
 ```
 169.254.0.0/16   (pasta container bridge — internal)
-192.168.0.0/24   (LAN)
-10.0.0.0/8       (WireGuard mesh)
+10.10.10.0/24    (WireGuard mesh)
 127.0.0.0/8      (loopback)
 100.86.0.0/16    (Tailscale)
 ```

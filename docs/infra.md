@@ -21,14 +21,7 @@
 **Topology:** Hub-and-spoke via Cerberus. Hairpin routing enabled.
 **Ports:** 51820 (Cerberus), 51821 (NightForge), 50555 (Tairn), dynamic (Hermes).
 
-**Public keys:**
-| Node | Public Key |
-|---|---|
-| Cerberus | SRmiMpAS6fVYvRKmVd4cjT6wDLNQqecWLktUNB28XmM= |
-| iPhone | MSXEjVdA+sXW3hbkr4/iwxn7mWaXD96xyCwyAOd1GQ4= |
-| NightForge | QsV69ujC9Er3ZIugFIrYVKjzuilhQP72LMT964jC8DQ= |
-| Tairn | ZZKPbobyVPpIS05/iHDGB4pDe7bKDwm9NK6eEGfr6hM= |
-| Hermes | 1MJchWRXNchXxm6BDHkyYBxetGzn8IVGME3As+aSjGg= |
+**Public keys:** REDACTED — removed from public docs for OPSEC
 
 **Topology rules (locked):**
 - Tairn initiates to Cerberus only -- Cerberus has no endpoint for Tairn in wg0.conf
@@ -121,7 +114,7 @@
 |---|---|---|
 | 8484 | noc-status JSON file server | /noc-status/ |
 | 8486 | Gitea API | 127.0.0.1:3000 |
-| 8489 | azrael-ops-dashboard | 10.0.0.3:9090 via WireGuard |
+| 8489 | CR1MS0N-ops-dashboard | 10.0.0.3:9090 via WireGuard |
 
 ---
 
@@ -164,5 +157,5 @@ Domain XML committed to veil configs/libvirt/ (tairn.xml, hermes.xml).
 |---|---|
 | Claude AI conversation | S0NN -- [Session Name] -- YYYY-MM-DD |
 | Obsidian learning capture | S0NN -- [Session Name] -- YYYY-MM-DD |
-| Handoff document | azrael-handoff-q1-s0NN.md |
+| Handoff document | CR1MS0N-handoff-q1-s0NN.md |
 | Git commit | docs: session handoff YYYY-MM-DD S0NN |
