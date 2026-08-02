@@ -336,50 +336,24 @@ Veil uses a hybrid deployment model combining declarative configuration, infrast
 | Cerberus | Manual + Podman Quadlets | systemd, nftables, Caddy | Chromebook (ARM) — limited IaC support |
 | NightForge | Manual + dotfiles | Niri, Podman, Neovim, Zsh | Desktop, see [nightforge](https://github.com/CR1MS0N-Operator/nightforge) |
 | Tairn | Declarative | NixOS `configuration.nix` | `nixos-rebuild switch` — full OS state in VCS |
-| Hermes | IaC | Terraform + libvirt XML | `terraform apply` + Alpine install |
+| Hermes | Manual (IaC planned) | libvirt XML + manual Alpine install | rebuild from `configs/libvirt/hermes.xml` |
 
-### Terraform + Ansible Pipeline (Hermes)
+### Hermes Provisioning (Planned IaC)
 
-The Hermes redirector VM is the only node with full IaC coverage:
+Hermes is the target for full IaC coverage (Terraform + Ansible), but those
+playbooks are **not yet committed to this repo** — `terraform/` and `ansible/`
+do not exist here yet. Today the redirector is recreated from the committed
+libvirt XML plus a manual Alpine install:
 
-```
-veil/
-├── terraform/
-│   ├── main.tf            # libvirt provider config, VM definition
-│   ├── variables.tf       # CPU, RAM, disk sizing
-│   └── outputs.tf         # VM IP, SSH config
-├── ansible/
-│   ├── playbooks/
-│   │   └── hermes.yml     # Alpine setup: WireGuard, Nginx, Netdata
-│   └── roles/
-│       └── hermes/
-│           ├── tasks/
-│           │   ├── main.yml
-│           │   ├── wireguard.yml
-│           │   └── nginx.yml
-│           └── templates/
-│               ├── wg0.conf.j2
-│               └── nginx.conf.j2
-└── configs/
-    └── libvirt/
-        ├── tairn.xml
-        └── hermes.xml
-```
+- `configs/libvirt/hermes.xml` (and `tairn.xml`) — VM definitions
+- `edge-node/configs/wireguard/` — example WireGuard configs
+- `edge-node/configs/caddy/Caddyfile` — redirector proxy config
 
-**Deployment sequence:**
+Planned pipeline (tracked in `docs/ARCHITECTURE-v2.md`):
 
-```bash
-# 1. Provision the VM
-cd veil/terraform
-terraform init
-terraform plan
-terraform apply
-
-# 2. Install Alpine (manual ISO mount + setup-alpine via virt-viewer)
-# 3. Configure the redirector
-cd veil/ansible
-ansible-playbook playbooks/hermes.yml -i inventories/hermes.ini
-```
+1. Provision the VM (`terraform apply` on the libvirt provider)
+2. Install Alpine (manual ISO mount + `setup-alpine` via virt-viewer)
+3. Configure the redirector (`ansible-playbook playbooks/hermes.yml`)
 
 ### NixOS Deployment (Tairn)
 
@@ -388,8 +362,7 @@ ansible-playbook playbooks/hermes.yml -i inventories/hermes.ini
 ssh tairn  # 10.10.10.4 via WireGuard
 sudo nixos-rebuild switch --show-trace
 
-# Config lives at /etc/nixos/configuration.nix
-# Committed in veil/configs/nixos/
+# Config lives at /etc/nixos/configuration.nix (tracked on Tairn — not committed to this repo)
 ```
 
 ### Cerberus Quadlet Deployment
@@ -397,19 +370,19 @@ sudo nixos-rebuild switch --show-trace
 ```bash
 # See Quickstart section below
 # Quadlet files in edge-node/containers/
-# nftables config in configs/nftables/cerberus.nft
+# nftables config in configs/nftables.conf
 ```
 
 ### Hermes Disposable Lifecycle
 
 ```
-  1. terraform apply        → VM provisioned on NightForge libvirt
-  2. Alpine setup-alpine     → OS installed
-  3. ansible-playbook       → Nginx + WireGuard + Netdata configured
-  4. wg-quick up            → Connects to Veil mesh (10.10.10.5)
-  5. ── active ──           → Redirecting C2 traffic for Tairn
-  6. terraform destroy      → VM destroyed, redirector burned
-  7. Return to step 1       → New VM, new SSH keys, new WireGuard keys
+  1. Recreate VM          → libvirt XML (configs/libvirt/hermes.xml)
+  2. Alpine setup-alpine   → OS installed
+  3. Manual config        → Nginx + WireGuard + Netdata configured (Terraform/Ansible planned)
+  4. wg-quick up          → Connects to Veil mesh (10.10.10.5)
+  5. ── active ──         → Redirecting C2 traffic for Tairn
+  6. Destroy VM           → redirector burned
+  7. Return to step 1     → New VM, new SSH keys, new WireGuard keys
 ```
 
 This burn-and-rebuild cycle is an operational security control: even if the redirector is compromised, it contains no persistent secrets and can be replaced from scratch in under 5 minutes.
@@ -422,29 +395,38 @@ This burn-and-rebuild cycle is an operational security control: even if the redi
 
 ```
 veil/
-├── README.md
+├── README.md                        # Overview, quickstart, operations playbook
+├── ARCHITECTURE.md                  # Topology, node roles, security boundaries, ecosystem
+├── CONTRIBUTING.md                  # Contribution workflow and conventions
+├── SECURITY.md                      # Public/private boundary, sanitization scheme
+├── CHANGELOG.md                     # History of notable changes
+├── AGENTS.md                        # Agent commands and infrastructure constraints
 ├── configs/
+│   ├── nftables.conf                # nftables ruleset (Cerberus)
 │   ├── sysctl/
-│   │   └── 99-wireguard.conf      # Kernel tuning for WireGuard hairpin
-│   └── nftables/
-│       └── cerberus.nft            # nftables ruleset
+│   │   └── 99-nightforge.conf       # Kernel tuning for WireGuard hairpin
+│   ├── homepage-*.yaml              # Homepage dashboard widgets and bookmarks
+│   ├── threshold.config             # Suricata threshold overrides
+│   ├── cowrie                       # Cowrie logrotate config
+│   └── libvirt/                     # Tairn/Hermes libvirt domain XML
 ├── edge-node/
+│   ├── configs/                     # Caddyfile, nftables, WireGuard examples, Homepage
 │   ├── containers/                  # Podman Quadlet unit files
-│   ├── systemd/                     # User systemd units
+│   ├── systemd/                     # systemd units and timers
 │   └── scripts/                     # Shield + NOC automation scripts
-├── dotfiles/                        # Shared shell/prompt configs (Starship)
-├── terraform/                       # Hermes redirector IaC
-├── ansible/                         # Hermes redirector Ansible playbooks
+├── dotfiles/                        # Shared shell/prompt configs (Starship, zsh)
+├── .github/workflows/               # shellcheck + IP-leak-check CI
 └── docs/
-    ├── architecture.md
-    ├── wireguard-mesh.md
-    ├── cerberus-setup.md
-    ├── tairn-setup.md
+    ├── architecture.md              # Legacy architecture (superseded by ARCHITECTURE.md)
     ├── services.md                  # Full service reference
     ├── ops.md                       # Operations runbook
     ├── troubleshooting.md           # Issue catalog
     ├── known-gaps.md                # Active and resolved gaps
-    └── infra.md                     # Node registry, key paths, port map
+    ├── edge-node-setup.md           # Cerberus setup walkthrough
+    ├── nightforge-shield.md         # Shield scoring engine reference
+    ├── infra.md                     # Node registry, key paths, port map (internal)
+    ├── ARCHITECTURE-v2.md           # Cloud-native/hybrid design proposal
+    └── skills/                      # Operational skill files
 ```
 
 ---
@@ -453,8 +435,8 @@ veil/
 
 ```bash
 # 1. Apply sysctl settings
-sudo cp configs/sysctl/99-wireguard.conf /etc/sysctl.d/
-sudo sysctl -p /etc/sysctl.d/99-wireguard.conf
+sudo cp configs/sysctl/99-nightforge.conf /etc/sysctl.d/
+sudo sysctl -p /etc/sysctl.d/99-nightforge.conf
 
 # 2. Create data directories
 sudo mkdir -p /var/nightforge/{cowrie-logs,cowrie-lib,scan-queue}
@@ -663,7 +645,7 @@ Active gaps tracked in the Veil infrastructure. See `docs/known-gaps.md` for ful
 | Homepage Netdata service widgets show identical data | Low | D1 | Low |
 | SearXNG autocomplete not working | Low | D1 | Low |
 | Scan queue has no worker consuming the queue | Low | 4 | High |
-| No network segmentation (VLANs) — flat 10.10.20.0/24 | Enhancement | 6 | Very High |
+| No network segmentation (VLANs) — flat 10.10.10.0/24 | Enhancement | 6 | Very High |
 
 ### Gap Detail
 
@@ -683,7 +665,7 @@ Blocked IPs accumulate in the scan queue but no worker performs Nuclei recon. Pl
 NightForge is connected to the mesh (10.10.10.3) but not reporting to the NOC dashboard. Planned: Netdata agent, Homepage service cards, centralized log aggregation.
 
 **Gap 6 — No Network Segmentation (VLANs)**
-Network is flat 10.10.20.0/24. Proposed zones: DMZ (honeypots), Ops (services), Red/C2 (NightForge, Mythic), Management (OOB). Prerequisites: managed switch, pfSense/OPNsense router.
+Network is flat 10.10.10.0/24. Proposed zones: DMZ (honeypots), Ops (services), Red/C2 (NightForge, Mythic), Management (OOB). Prerequisites: managed switch, pfSense/OPNsense router.
 
 ### Resolved Gaps
 
@@ -699,7 +681,21 @@ The following gaps were closed during Phase S1 (Service Cleanup):
 - NightForge DNS single point of failure → Cloudflare fallback DNS
 - Cerberus hostname b-k3s → renamed to cerberus
 - Tairn/Mythic C2 deployment → NixOS + Mythic + Poseidon deployed
-- Subnet migration → all configs updated to 10.10.20.0/24 after ISP change
+- Subnet migration → all configs updated to 10.10.10.0/24 after ISP change
+
+---
+
+## Related Projects
+
+Veil is the infrastructure backbone of the CR1MS0N Security project family. See [ARCHITECTURE.md §7](ARCHITECTURE.md#7-ecosystem) for integration details.
+
+| Project | Role |
+|---------|------|
+| [nightforge](https://github.com/CR1MS0N-Operator/nightforge) | NightForge workstation configuration + `harnessd` monitoring daemon |
+| [nightforge-config](https://github.com/CR1MS0N-Operator/nightforge-config) | Desktop shell config (Niri, Quickshell) |
+| [c4](https://github.com/CR1MS0N-Operator/c4) | C2 Control Center — deploy/manage/destroy C2 frameworks |
+| [Lantern](https://github.com/CR1MS0N-Operator/ACLGuard-Active-Directory-Permission-Auditor) | AD permission auditor (BloodHound-inspired; Go rewrite in progress) |
+| [security-research](https://github.com/CR1MS0N-Operator/security-research) | Technique writeups, labs, CVE research |
 
 ---
 
