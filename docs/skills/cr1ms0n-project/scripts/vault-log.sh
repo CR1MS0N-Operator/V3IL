@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# vault-log.sh — Write project completion note to azrael-vault
+# vault-log.sh — Write project completion note to cr1ms0n-vault
 #
 # Usage:
 #   vault-log.sh <project-name> <date> <summary> <category> <repo-name> [related-projects...]
@@ -13,7 +13,7 @@
 #   related-projects  Optional: space-separated repo/project names for wikilinks
 #
 # Environment:
-#   VAULT_PATH        Override vault root (default: ~/Documents/azrael-vault)
+#   VAULT_PATH        Override vault root (default: ~/Documents/cr1ms0n-vault)
 
 set -euo pipefail
 
@@ -35,7 +35,7 @@ RELATED_PROJECTS=("$@")
 
 # ── Vault path resolution ─────────────────────────────────────────────────────
 
-VAULT_PATH="${VAULT_PATH:-$HOME/Documents/azrael-vault}"
+VAULT_PATH="${VAULT_PATH:-$HOME/Documents/cr1ms0n-vault}"
 
 if [[ ! -d "$VAULT_PATH" ]]; then
     echo "vault-log.sh: warn: vault path not found: $VAULT_PATH — skipping note write" >&2
@@ -76,7 +76,7 @@ ${SUMMARY}
 
 ${RELATED_LINKS}## Related Skill
 
-[[azrael-project-skill]]
+[[cr1ms0n-project-skill]]
 "
 
 # ── Write via obsidian CLI or direct file fallback ────────────────────────────

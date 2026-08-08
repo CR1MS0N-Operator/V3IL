@@ -16,7 +16,7 @@ description: Use at the start and end of every session, automatically. Governs h
 Every session starts with this sequence before any technical work begins.
 
 **Step 1 — Confirm the handoff document is loaded**
-The handoff document (`azrael-handoff-YYYY-MM-DD.md`) is attached to the CR1MS0N Claude project and should be present in context. Claude reads it fully before responding to any technical request. If it is not present or appears outdated, flag it immediately: "The handoff document in this project is dated [date] — is there a more recent version to upload before we start?"
+The handoff document (`cr1ms0n-handoff-YYYY-MM-DD.md`) is attached to the CR1MS0N Claude project and should be present in context. Claude reads it fully before responding to any technical request. If it is not present or appears outdated, flag it immediately: "The handoff document in this project is dated [date] — is there a more recent version to upload before we start?"
 
 **Step 1b — Read applicable skill files**
 After confirming the handoff is loaded, call `view` on this file (skill-06) via the view tool. This is the only unconditional read — it happens every session without exception. Running skill-06 from memory is not equivalent and is the failure mode this step exists to prevent. Also read skill-09 (verification-and-accuracy-standard) unconditionally — it governs information sourcing behavior for all technical work and applies regardless of session focus.
@@ -179,10 +179,10 @@ Output only the sections identified in Step 2, plus Section 7. Label each sectio
 **Step 5 — Provide Claude Code prompt**
 
 Output a complete Claude Code prompt containing:
-1. Instruction to copy ~/Documents/azrael-ops/azrael-handoff-q1-sNNN.md to ~/Documents/azrael-ops/azrael-handoff-q1-s(NNN+1).md
+1. Instruction to copy ~/Documents/cr1ms0n-ops/cr1ms0n-handoff-q1-sNNN.md to ~/Documents/cr1ms0n-ops/cr1ms0n-handoff-q1-s(NNN+1).md
 2. The exact surgical edits for each changed section — quoted text to find, replacement text
 3. The commit command:
-   git add azrael-handoff-q1-s(NNN+1).md && git commit -m "docs: session handoff YYYY-MM-DD S(NNN+1)"
+   git add cr1ms0n-handoff-q1-s(NNN+1).md && git commit -m "docs: session handoff YYYY-MM-DD S(NNN+1)"
 4. git push
 
 Claude Code handles the mechanical file operations. Claude AI handles the content decisions. Do not regenerate the full document in this interface.

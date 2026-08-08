@@ -1,8 +1,8 @@
 ---
-name: azrael-project
+name: cr1ms0n-project
 description: >
   Lightweight project execution skill for personal/side project builds in Claude Code.
-  Trigger phrases: "azrael-project init", "azrael-project execute", "azrael-project complete",
+  Trigger phrases: "cr1ms0n-project init", "cr1ms0n-project execute", "cr1ms0n-project complete",
   "/project init", "/project execute", "/project complete".
   Not for Veil infra or security research work.
 context: fork
@@ -14,7 +14,7 @@ tools:
 model: claude-sonnet-4-5
 ---
 
-# azrael-project Skill
+# cr1ms0n-project Skill
 
 Lightweight execution loop for personal/side project builds. Three commands: `init`, `execute`, `complete`.
 Not for Veil infra, security research, or anything in `~/Github/veil/` or `~/Github/security-research/`.
@@ -23,7 +23,7 @@ Not for Veil infra, security research, or anything in `~/Github/veil/` or `~/Git
 
 ## Command: init
 
-**Invocation:** `azrael-project init <project description>`
+**Invocation:** `cr1ms0n-project init <project description>`
 
 **Behavior:**
 
@@ -37,7 +37,7 @@ Not for Veil infra, security research, or anything in `~/Github/veil/` or `~/Git
 4. Populate `templates/STATE.md` into `.planning/STATE.md` with empty task history.
 5. Create the `.planning/` directory if it does not exist.
 6. Stage `.planning/SPEC.md` and `.planning/STATE.md`.
-7. Commit: `chore: init azrael-project scaffold`
+7. Commit: `chore: init cr1ms0n-project scaffold`
 
 **Rules:**
 - Do not begin implementation during init.
@@ -48,7 +48,7 @@ Not for Veil infra, security research, or anything in `~/Github/veil/` or `~/Git
 
 ## Command: execute
 
-**Invocation:** `azrael-project execute <inline task-spec>`
+**Invocation:** `cr1ms0n-project execute <inline task-spec>`
 
 The `<inline task-spec>` argument IS the complete task specification. No separate file.
 
@@ -135,7 +135,7 @@ Report: PASS or FAIL with specific evidence.
 
 ## Command: complete
 
-**Invocation:** `azrael-project complete`
+**Invocation:** `cr1ms0n-project complete`
 
 **Behavior:**
 

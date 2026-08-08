@@ -9,7 +9,7 @@ All notable changes to this repository, reconstructed from git history. Entries 
 ## 2026-06-21 — Security, Branding & CI
 
 - **Security P0 fixes:** rotated the exposed Gitea token, added MIT LICENSE, removed WireGuard public keys from docs, sanitized real IPs to the public placeholder scheme (`10.10.10.x`)
-- **Rebrand:** Azrael Security → CR1MS0N, ForeverLX → CR1MS0N-Operator, Nyx → Veil (repo-wide)
+- **Rebrand:** Cr1ms0n Security → CR1MS0N, ForeverLX → CR1MS0N-Operator, Nyx → Veil (repo-wide)
 - **CI:** added shellcheck and IP-leak-check workflows
 - **Docs:** added `docs/ARCHITECTURE-v2.md` — cloud-native/hybrid red team infra design proposal (Oracle Cloud + Cloudflare Tunnel)
 - **Meta:** GitHub topics configured (`wireguard, red-team, mythic-c2, infrastructure-as-code, …`)
@@ -33,7 +33,7 @@ All notable changes to this repository, reconstructed from git history. Entries 
 - Tracked Caddyfile in-repo (`edge-node/configs/caddy/Caddyfile`)
 - Weekly reboot systemd timer for Cerberus; NOC status scripts and timer; NOC dashboard redesign (Glances, noc-status widgets); Gitea widget; Caddy 8486 proxy
 - nftables: `iifname/oifname` for wg0 boot race; removed direct Tairn peer from NightForge wg0 (hairpin routing); whitelisted full RFC1918 in Shield
-- Skill suite: azrael-project execution skill, session open/close protocol (v1.x), verification standard (skill-09), brand communication standard (v1.x)
+- Skill suite: cr1ms0n-project execution skill, session open/close protocol (v1.x), verification standard (skill-09), brand communication standard (v1.x)
 - Session handoffs S034/S048; commit-close protocol hardening
 
 ## 2026-03-19 → 2026-03-25 — Documentation Rewrite & Claude Config
