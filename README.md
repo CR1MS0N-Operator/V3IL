@@ -415,7 +415,7 @@ veil/
 │   ├── systemd/                     # systemd units and timers
 │   └── scripts/                     # Shield + NOC automation scripts
 ├── dotfiles/                        # Shared shell/prompt configs (Starship, zsh)
-├── .github/workflows/               # shellcheck + IP-leak-check CI
+├── .github/workflows/               # IP-leak-check CI
 └── docs/
     ├── architecture.md              # Legacy architecture (superseded by ARCHITECTURE.md)
     ├── services.md                  # Full service reference
