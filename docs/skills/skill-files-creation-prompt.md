@@ -105,11 +105,11 @@ Produce a skill file that defines:
 ## Output Format for Each Skill File
 
 Each skill file should be saved as:
-- `azrael-skill-01-research-writeup.md`
-- `azrael-skill-02-infrastructure-ops.md`
-- `azrael-skill-03-job-filter.md`
-- `azrael-skill-04-learning-sessions.md`
-- `azrael-skill-05-brand-communication.md`
+- `cr1ms0n-skill-01-research-writeup.md`
+- `cr1ms0n-skill-02-infrastructure-ops.md`
+- `cr1ms0n-skill-03-job-filter.md`
+- `cr1ms0n-skill-04-learning-sessions.md`
+- `cr1ms0n-skill-05-brand-communication.md`
 
 Header format for each file:
 ```

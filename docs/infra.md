@@ -66,9 +66,9 @@
 ~/Github/veil/docs/troubleshooting.md
 ~/Github/security-research/
 ~/Github/nightforge/
-~/Github/azraelsec.dev/
-~/Documents/azrael-ops/
-~/Documents/azrael-vault/
+~/Github/cr1ms0nsec.dev/
+~/Documents/cr1ms0n-ops/
+~/Documents/cr1ms0n-vault/
 ~/lab/VMs/
 ~/Repos/3rd-party/
 ~/Repos/3rd-party/ccsm/
@@ -82,7 +82,7 @@
 ~/.claude/hooks/block-destructive.sh
 ~/.claude/agents/
 ~/.claude/skills/strategic-compact/
-~/.claude/skills/azrael-project/
+~/.claude/skills/cr1ms0n-project/
 ~/.claude/commands/
 ~/.claude/plugins/cache/trailofbits/
 ~/.claude/plugins/claude-hud/config.json
