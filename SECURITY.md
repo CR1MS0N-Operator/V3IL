@@ -62,7 +62,7 @@ For operational security reasons, **do not file public issues** for security vul
 
 ## OPSEC Commitments
 
-- CI gates: `.github/workflows/ip-leak-check.yml` (real-IP / private-key / API-token patterns on `.md/.yaml/.yml/.conf`) and `shellcheck.yml` (all `.sh`)
+- CI gates: `.github/workflows/ip-leak-check.yml` (real-IP / private-key / API-token patterns on `.md/.yaml/.yml/.conf`)
 - WireGuard public keys were removed from docs in 2026-06; example configs carry `REDACTED`
 - Real IPs were sanitized to the placeholder scheme in 2026-06 (README); `docs/` debt tracked above
 - A previously exposed Gitea API token (2026-03) was redacted and rotated; the config now holds `"ROTATED"`
