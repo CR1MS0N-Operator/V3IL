@@ -1,4 +1,4 @@
-# Veil
+# V3IL
 
 **CR1MS0N Security — Continuous Adversarial Validation Infrastructure**
 
@@ -8,7 +8,7 @@
 
 Built and operated by [CR1MS0N-Operator](https://github.com/CR1MS0N-Operator) | CR1MS0N Security™
 
-Veil is the operational infrastructure layer of the CR1MS0N Security portfolio: a production-grade offensive security homelab built entirely as code. Four nodes on a WireGuard hub-and-spoke mesh — an Arch edge node running honeypot + IDS, a declarative NixOS host running Mythic C2, a disposable Alpine redirector, and an operator workstation — continuously discover, attack and score the exposure of operator-owned infrastructure under real adversary TTPs.
+V3IL is the operational infrastructure layer of the CR1MS0N Security portfolio: a production-grade offensive security homelab built entirely as code. Four nodes on a WireGuard hub-and-spoke mesh — an Arch edge node running honeypot + IDS, a declarative NixOS host running Mythic C2, a disposable Alpine redirector, and an operator workstation — continuously discover, attack and score the exposure of operator-owned infrastructure under real adversary TTPs.
 
 This is not a simulation environment. Veil operationalizes the CTEM **Validate** phase: sensor telemetry (Suricata, Cowrie) and emulation traffic are scored continuously, risk is quantified in loss-event frequency terms (FAIR), and blocked actors are pushed to an nftables blackhole in real time. The standing story of the CR1MS0N platform: *exposure is continuously validated, not tested point-in-time.*
 
@@ -65,7 +65,7 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
 
 ## Topology
 
-The Veil network spans two physical subnets bridged by WireGuard:
+The V3IL network spans two physical subnets bridged by WireGuard:
 
 ### Physical Network (10.10.10.0/24)
 
