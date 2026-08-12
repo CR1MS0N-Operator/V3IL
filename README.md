@@ -1,24 +1,30 @@
 # Veil
 
-**CR1MS0N Security — Offensive Security Infrastructure**
+**CR1MS0N Security — Continuous Adversarial Validation Infrastructure**
+
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Last Commit](https://img.shields.io/github/last-commit/CR1MS0N-Operator/veil)](https://github.com/CR1MS0N-Operator/veil)
+[![Repo Size](https://img.shields.io/github/repo-size/CR1MS0N-Operator/veil)](https://github.com/CR1MS0N-Operator/veil)
 
 Built and operated by [CR1MS0N-Operator](https://github.com/CR1MS0N-Operator) | CR1MS0N Security™
 
-> Veil is the operational infrastructure layer connecting all CR1MS0N Security nodes. It is not a simulation environment — it is a production-grade offensive security homelab built for real adversary emulation, threat detection, and red team infrastructure research.
+Veil is the operational infrastructure layer of the CR1MS0N Security portfolio: a production-grade offensive security homelab built entirely as code. Four nodes on a WireGuard hub-and-spoke mesh — an Arch edge node running honeypot + IDS, a declarative NixOS host running Mythic C2, a disposable Alpine redirector, and an operator workstation — continuously discover, attack and score the exposure of operator-owned infrastructure under real adversary TTPs.
+
+This is not a simulation environment. Veil operationalizes the CTEM **Validate** phase: sensor telemetry (Suricata, Cowrie) and emulation traffic are scored continuously, risk is quantified in loss-event frequency terms (FAIR), and blocked actors are pushed to an nftables blackhole in real time. The standing story of the CR1MS0N platform: *exposure is continuously validated, not tested point-in-time.*
 
 ---
 
 ## Infrastructure Overview
 
-| Node | Role | OS | WireGuard IP | LAN IP |
+| Node | Role | OS | WireGuard IP | LAN IP (placeholder) |
 |------|------|----|-------------|--------|
 | **Cerberus** | Edge node — services, detection, honeypot | Arch Linux (headless) | `10.10.10.1` (hub) | `10.10.10.251` (static) |
 | **NightForge** | Operator workstation — tooling, compute, development | Arch Linux + Niri WM | `10.10.10.3` | `10.10.10.156` (DHCP) |
-| **Tairn** | Attack node — Mythic C2, agent staging, lab targets | NixOS 24.11 (declarative) | `10.10.10.4` | `10.10.10.230` (libvirt NAT) |
-| **Hermes** | Redirector VM — C2 egress, traffic forwarding, disposable | Alpine Linux 3.23.3 | `10.10.10.5` | `10.10.10.200` (libvirt NAT) |
+| **Tairn** | Attack node — Mythic C2, agent staging, lab targets | NixOS 24.11 (declarative) | `10.10.10.4` | `10.10.11.230` (libvirt NAT) |
+| **Hermes** | Redirector VM — C2 egress, traffic forwarding, disposable | Alpine Linux 3.23.3 | `10.10.10.5` | `10.10.11.200` (libvirt NAT) |
 | **iPhone** | Mobile WireGuard client | iOS | `10.10.10.2` | — |
 
-All inter-node communication runs exclusively over a WireGuard hub-and-spoke mesh. No node is directly reachable from WAN.
+All inter-node communication runs exclusively over a WireGuard hub-and-spoke mesh. No node is directly reachable from WAN. All addresses use the public placeholder scheme — see [SECURITY.md](SECURITY.md#sanitization-scheme).
 
 ---
 
@@ -26,55 +32,34 @@ All inter-node communication runs exclusively over a WireGuard hub-and-spoke mes
 
 ```
                         Internet
-                           │
-                    ┌──────▼──────┐
-                    │  Cerberus   │
-                    │ 10.10.10.1    │
-                    │ 10.10.10.x │
-                    │             │
-                    │ Cowrie      │
-                    │ Suricata    │
-                    │ Pi-hole     │
-                    │ Caddy TLS   │
-                    │ Gitea       │
-                    │ Vaultwarden │
-                    │ Netdata     │
-                    │ Homepage    │
-                    └──────┬──────┘
-                           │ WireGuard mesh (10.10.10.0/24)
-                           │
-              ┌────────────┼────────────────┐
-              │            │                 │
-    │   10.10.10.3        │  │     │       10.10.10.4         │
-    │   10.10.10.x     │  │     │   10.10.10.x        │
-    │                   │  │     │   (libvirt NAT,        │
-    │ Operator WS       │  │     │    NightForge-local)   │
-    │ Niri WM           │  │     │                        │
-    │ Offensive tooling │  │     │ Mythic C2              │
-    │ Podman profiles   │  │     │ Poseidon agent         │
-    │ Neovim / tmux     │  │     │ HTTP C2 profile        │
-    │ Ollama (local AI) │  │     │ Lab target VMs         │
-    │                   │  │     │ NixOS declarative      │
-    │  libvirt host     │  │     └────────────────────────┘
-    │  ┌────────────────┴──┴────┐
-    │  │    Hermes              │
-    │  │    10.10.10.5            │
-    │  │    10.10.10.200     │
-    │  │    (libvirt NAT,       │
-    │  │     NightForge-local)  │
-    │  │                        │
-    │  │ Alpine Linux           │
-    │  │ Nginx redirector       │
-    │  │ C2 egress proxy        │
-    │  │ WireGuard only access  │
-    │  │ Disposable — rebuild   │
-    │  │ from Terraform+XML     │
-    │  └────────────────────────┘
-    │                   │
-    └───────────────────┘
+                            │
+                            ▼
+             ┌──────────────────────────────┐
+             │           Cerberus           │
+             │  10.10.10.1 · edge · hub     │
+             │                              │
+             │  Cowrie SSH honeypot         │
+             │  Suricata IDS → Shield       │
+             │  Pi-hole DNS · Caddy TLS     │
+             │  Gitea · Vaultwarden ·       │
+             │  Netdata · Homepage NOC      │
+             └──────────────┬───────────────┘
+                            │
+             WireGuard mesh · 10.10.10.0/24
+                            │
+        ┌───────────────────┼───────────────────┐
+        ▼                   ▼                   ▼
+┌───────────────┐   ┌───────────────┐   ┌───────────────┐
+│  NightForge   │   │    Tairn      │   │    Hermes     │
+│  10.10.10.3   │   │  10.10.10.4   │   │  10.10.10.5   │
+│ operator WS   │   │  Mythic C2    │   │  redirector   │
+│  VM host      │   │  NixOS 24.11  │   │  Alpine       │
+│  libvirt NAT  │   │  libvirt NAT  │   │  libvirt NAT  │
+│  10.10.11.x   │   │ 10.10.11.230  │   │ 10.10.11.200  │
+└───────────────┘   └───────────────┘   └───────────────┘
 ```
 
-**WireGuard topology:** Hub-and-spoke via Cerberus. Cerberus is the always-on edge node and mesh hub. NightForge, Tairn, and Hermes peer exclusively through Cerberus. Hairpin routing enabled for node-to-node communication across the mesh. NightForge also hosts two VMs (Tairn, Hermes) under libvirt NAT (`10.10.10.0/24`), accessible via WireGuard IPs on the mesh.
+**WireGuard topology:** Hub-and-spoke via Cerberus. Cerberus is the always-on edge node and mesh hub. NightForge, Tairn, and Hermes peer exclusively through Cerberus. Hairpin routing enabled for node-to-node communication across the mesh. NightForge hosts Tairn and Hermes as VMs under its local libvirt NAT (`10.10.11.0/24`); the VMs are reachable on the mesh via their WireGuard addresses.
 
 ---
 
@@ -129,8 +114,6 @@ The Veil network spans two physical subnets bridged by WireGuard:
 - Hermes and Tairn are WireGuard-only accessible; no direct LAN path
 - NightForge SSH config uses WireGuard IPs (`10.10.10.4`, `10.10.10.5`), not libvirt NAT IPs
 
-<!-- ![Network Topology](docs/diagrams/topology.png) -->
-
 ---
 
 ## Network Flow
@@ -139,26 +122,27 @@ How traffic routes through the Veil mesh from each node's perspective.
 
 ### Operator to C2 (NightForge → Tairn)
 
-   10.10.10.3       10.10.10.1                       10.10.10.4
-                    │
-            nftables forward: iif "wg0" oif "wg0" accept
-            rp_filter=0 on wg0
+```
+NightForge ──wg0──▶ Cerberus ──wg0──▶ Tairn
+10.10.10.3            10.10.10.1       10.10.10.4
+                          │
+                          │  nftables forward: iif "wg0" oif "wg0" accept
+                          │  rp_filter=0 on wg0
 ```
 
 The Mythic C2 web UI (`https://10.10.10.4:7443`) is accessed exclusively over WireGuard. Tairn's DOCKER-USER iptables chain restricts port 7443 to `10.10.10.0/24`.
 
 ### C2 Agent Callback (Internet → Hermes → Tairn)
 
-   WAN                                     10.10.10.1              10.10.11.1
-                                           port forward             │
-                                                               Hermes (10.10.10.5)
-                                                               Nginx reverse proxy
-                                                                   │
-                                                              Tairn (10.10.10.4)
-                                                              Mythic C2 (7443)
+```
+WAN ──(router port-forward 443)──▶ Cerberus ──▶ Hermes (10.10.10.5)
+                                                   │  Nginx TLS termination
+                                                   ▼
+                                              Tairn (10.10.10.4)
+                                              Mythic C2 · :7443
 ```
 
-Hermes acts as the C2 redirector. Nginx on Hermes terminates the external-facing TLS and forwards traffic to Mythic on Tairn. Hermes is disposable — rebuilt from Terraform + libvirt XML on demand. This provides an operational security layer: the redirector is burned and replaced at configurable intervals or after compromise indicators.
+Hermes acts as the C2 redirector. Nginx on Hermes terminates the external-facing TLS and forwards traffic to Mythic on Tairn. Hermes is disposable — recreated on demand from the committed libvirt XML (see [Deployment](#deployment)). This is an operational security control: the redirector is burned and replaced at configurable intervals or after compromise indicators, and holds no persistent secrets.
 
 ### Internet Threat Hunting (Cerberus)
 
@@ -191,8 +175,6 @@ The Shield scoring engine reads Suricata alerts and Cowrie events simultaneously
 ```
 
 All `.lan` services are served over TLS via Caddy local CA. NightForge has the CA root certificate installed. WireGuard hairpin routing plus Pi-hole `.lan` DNS resolution make services available at their domain names from any mesh node.
-
-<!-- ![Network Flow Diagram](docs/diagrams/network-flow.png) -->
 
 ---
 
@@ -250,7 +232,7 @@ Alpine Linux 3.23.3 VM hosted on NightForge via libvirt NAT. Serves as the C2 eg
 - **OS:** Alpine Linux (minimal, ~150MB footprint)
 - **Proxy:** Nginx reverse proxy (TLS termination + stream forwarding)
 - **Networking:** Nginx listens on port 443, upstream to `10.10.10.4:7443`
-- **Disposable:** Full VM state captured in libvirt XML + Terraform config; rebuild in <2 minutes
+- **Disposable:** VM definition captured in `configs/libvirt/hermes.xml`; rebuilt in minutes (Terraform/Ansible planned — see [docs/ARCHITECTURE-v2.md](docs/ARCHITECTURE-v2.md))
 - **Lifecycle:** Static config in `/etc/nginx/nginx.conf`, `/etc/wireguard/wg0.conf`, `/etc/network/interfaces`
 - **Access:** WireGuard-only (`10.10.10.5`). No direct LAN path.
 - **Monitoring:** Netdata agent reporting to Cerberus
@@ -266,10 +248,10 @@ Alpine Linux 3.23.3 VM hosted on NightForge via libvirt NAT. Serves as the C2 eg
 | C2 redirector | Hermes — disposable Alpine Nginx proxy between WAN and Mythic |
 | Traffic flow isolation | Hub-and-spoke mesh; all spoke-to-spoke traffic routes through Cerberus |
 | Container isolation | Rootless Podman Quadlets (Cerberus), Docker (Tairn — Mythic requirement) |
-| VM isolation | Air-gapped libvirt network (`virbr1`, `10.10.10.0/24`) for AD labs |
+| VM isolation | Air-gapped libvirt network (virbr1) for AD labs; Tairn/Hermes on NightForge-local NAT planes |
 | Secret management | Vaultwarden + `/etc/containers/secrets/` for Quadlet env injection |
 | DNS security | Pi-hole (`.lan` resolution + ad/tracker sinkhole) |
-| TLS | Caddy local CA (all `.lan` services), Nginx self-signed (Hermes redirector) |
+| TLS | Caddy local CA (all `.lan` services), Nginx TLS termination (Hermes redirector) |
 | SSH hardening | Key-only auth, no root password login, port 22 is Cowrie honeypot |
 | Intrusion detection | Suricata 8.0.3 (network IDS), Cowrie 2.9.13 (SSH honeypot) |
 | Automated blocking | NightForge Shield — scores threats, blackholes IPs for 1hr via nftables |
@@ -320,8 +302,6 @@ All scripts in `edge-node/scripts/noc/`:
 | `suricata-status.sh` | `suricata.json` | IDS alert stats — high/critical alerts, persistent sources |
 | `nftables-status.sh` | `nftables.json` | Firewall stats — blackhole drops, input drops |
 | `noc-update.sh` | all of above | Orchestrator — runs all status scripts, writes to `~/noc-status/` |
-
-<!-- ![Monitoring Dashboard](docs/diagrams/dashboard.png) -->
 
 ---
 
@@ -386,8 +366,6 @@ sudo nixos-rebuild switch --show-trace
 ```
 
 This burn-and-rebuild cycle is an operational security control: even if the redirector is compromised, it contains no persistent secrets and can be replaced from scratch in under 5 minutes.
-
-<!-- ![Deployment Pipeline](docs/diagrams/deployment.png) -->
 
 ---
 
@@ -505,7 +483,7 @@ sudo wg show
 # 2. Add peer to Cerberus wg0.conf:
 #   [Peer]
 #   PublicKey = <new-node-pubkey>
-#   AllowedIPs = 10.10.10.x/32
+#   AllowedIPs = 10.10.10.x/32   # hub side; spokes use the full mesh prefix 10.10.10.0/24
 # 3. Restart WireGuard on Cerberus: sudo systemctl restart wg-quick@wg0
 # 4. Configure new node to peer with Cerberus
 
@@ -689,12 +667,11 @@ The following gaps were closed during Phase S1 (Service Cleanup):
 
 Veil is the infrastructure backbone of the CR1MS0N Security project family. See [ARCHITECTURE.md §7](ARCHITECTURE.md#7-ecosystem) for integration details.
 
-| Project | Role |
-|---------|------|
-| [nightforge](https://github.com/CR1MS0N-Operator/nightforge) | NightForge workstation configuration + `harnessd` monitoring daemon |
-| [nightforge-config](https://github.com/CR1MS0N-Operator/nightforge-config) | Desktop shell config (Niri, Quickshell) |
-| [c4](https://github.com/CR1MS0N-Operator/c4) | C2 Control Center — deploy/manage/destroy C2 frameworks |
-| [Lantern](https://github.com/CR1MS0N-Operator/ACLGuard-Active-Directory-Permission-Auditor) | AD permission auditor (BloodHound-inspired; Go rewrite in progress) |
+| Project | Role in the Platform |
+|---------|---------------------|
+| [nightforge](https://github.com/CR1MS0N-Operator/nightforge) | Measurement & mobilization — 10-layer harness turns validation evidence into proposals, gates, and FAIR benefit measurement |
+| [c4](https://github.com/CR1MS0N-Operator/c4) | Validation engine — C2 Control Center deploys/manages/destroys Mythic/Sliver for CTEM Validate-phase emulation |
+| [Lantern](https://github.com/CR1MS0N-Operator/ACLGuard-Active-Directory-Permission-Auditor) | Identity exposure validation — AD permission auditing feeding CTEM Discover/Prioritize/Validate and FAIR loss-magnitude inputs |
 | [security-research](https://github.com/CR1MS0N-Operator/security-research) | Technique writeups, labs, CVE research |
 
 ---
