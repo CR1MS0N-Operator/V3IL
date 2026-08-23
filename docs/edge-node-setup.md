@@ -133,11 +133,11 @@ sudo tailscale up
 ### User Crontab (foreverlx)
 
 ```
-0 2 * * *   /usr/bin/bash /home/foreverlx/backup-script.sh > /home/foreverlx/backup.log 2>&1
-0 3 * * *   /home/foreverlx/scripts/maintenance.sh
+0 2 * * *   /usr/bin/bash $HOME/backup-script.sh > $HOME/backup.log 2>&1
+0 3 * * *   $HOME/scripts/maintenance.sh
 ```
 
-**backup-script.sh** — Backs up Vaultwarden SQLite database to `/home/foreverlx/backups/vaultwarden/` and commits to a private Gitea repository.
+**backup-script.sh** — Backs up Vaultwarden SQLite database to `$HOME/backups/vaultwarden/` and commits to a private Gitea repository.
 
 **maintenance.sh** — Updates Suricata rules, rotates old JSON logs (>3 days), backs up Vaultwarden and Homepage configs, pre-downloads Arch updates.
 

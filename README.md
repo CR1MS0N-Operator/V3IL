@@ -12,6 +12,8 @@ Veil is the operational infrastructure layer of the CR1MS0N Security portfolio: 
 
 This is not a simulation environment. Veil operationalizes the CTEM **Validate** phase: sensor telemetry (Suricata, Cowrie) and emulation traffic are scored continuously, risk is quantified in loss-event frequency terms (FAIR), and blocked actors are pushed to an nftables blackhole in real time. The standing story of the CR1MS0N platform: *exposure is continuously validated, not tested point-in-time.*
 
+**Platform role.** Veil is the **validation substrate** of the [CR1MS0N continuous adversarial validation platform](https://github.com/CR1MS0N-Operator/veil) — the mesh, sensors, and emulation targets that the rest of the platform scores and mobilizes against. It pairs with [NightForge](https://github.com/CR1MS0N-Operator/nightforge) (measurement & mobilization), [C4](https://github.com/CR1MS0N-Operator/c4) (validation engine), and [Lantern](https://github.com/CR1MS0N-Operator/ACLGuard-Active-Directory-Permission-Auditor) (identity exposure validation).
+
 ---
 
 ## Infrastructure Overview

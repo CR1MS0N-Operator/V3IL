@@ -89,7 +89,7 @@ After=network-online.target
 
 [Service]
 Type=simple
-ExecStart=/bin/bash /home/foreverlx/scripts/suricata/suricata-shield.sh
+ExecStart=/bin/bash %h/scripts/suricata/suricata-shield.sh
 Restart=always
 RestartSec=5
 StandardOutput=journal
