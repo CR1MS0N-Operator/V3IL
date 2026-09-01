@@ -1,13 +1,13 @@
 ---
 name: container-boundary-research-methodology
-description: Use when Darrius is working on any container boundary research session — scoping a research question, running lab work, reproducing a behavior, writing up a finding, or deciding whether a result meets the publication threshold.
+description: Use when the operator is working on any container boundary research session — scoping a research question, running lab work, reproducing a behavior, writing up a finding, or deciding whether a result meets the publication threshold.
 ---
 
 # CR1MS0N Skill — Container Boundary Research Methodology
 **Version:** 1.0
 **Date:** 2026-03-19
 **Purpose:** Define the research methodology, finding standards, and publication threshold for container boundary research conducted under the CR1MS0N brand.
-**Use when:** Darrius is working on any container boundary research session — scoping a new question, reproducing a behavior, writing up a finding, or deciding whether something is publication-ready.
+**Use when:** the operator is working on any container boundary research session — scoping a new question, reproducing a behavior, writing up a finding, or deciding whether something is publication-ready.
 
 ---
 

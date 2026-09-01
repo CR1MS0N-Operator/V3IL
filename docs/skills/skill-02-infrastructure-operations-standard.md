@@ -1,13 +1,13 @@
 ---
 name: infrastructure-operations-standard
-description: Use when Darrius asks Claude to help with any work on Cerberus, NightForge, Tairn, or Hermes — service changes, config edits, Quadlet deployments, NixOS changes, firewall rules, WireGuard, or troubleshooting. Enforces node-specific rules, command format, verification steps, and commit standards.
+description: Use when the operator asks Claude to help with any work on Cerberus, NightForge, Tairn, or Hermes — service changes, config edits, Quadlet deployments, NixOS changes, firewall rules, WireGuard, or troubleshooting. Enforces node-specific rules, command format, verification steps, and commit standards.
 ---
 
 # CR1MS0N Skill — Infrastructure Operations Standard
 **Version:** 1.0
 **Date:** 2026-03-19
 **Purpose:** Define consistent patterns for commands, config changes, commits, and documentation when working on Veil infrastructure.
-**Use when:** Darrius asks Claude to help with any work on Cerberus, NightForge, or Tairn — service changes, config edits, Quadlet deployments, NixOS changes, firewall rules, or troubleshooting.
+**Use when:** the operator asks Claude to help with any work on Cerberus, NightForge, or Tairn — service changes, config edits, Quadlet deployments, NixOS changes, firewall rules, or troubleshooting.
 
 ---
 
@@ -25,11 +25,11 @@ description: Use when Darrius asks Claude to help with any work on Cerberus, Nig
 
 **Cerberus:**
 - Search with `grep`, not `rg` — ripgrep is not installed
-- User Quadlets live in `~/.config/containers/systemd/` — managed as `foreverlx` user
+- User Quadlets live in `~/.config/containers/systemd/` — managed as `operator` user
 - System Quadlets live in `/etc/containers/systemd/` — managed as root
 - Always use `systemctl --user` for user-level Quadlets; `sudo systemctl` for system-level
 - Real SSH is on port 2121. Port 22 is Cowrie honeypot — never SSH to port 22
-- WireGuard hub: `10.0.0.1`. All mesh traffic routes through Cerberus
+- WireGuard hub: `10.10.10.1`. All mesh traffic routes through Cerberus
 
 **NightForge:**
 - Search with `rg` — ripgrep is installed and aliased
@@ -43,7 +43,7 @@ description: Use when Darrius asks Claude to help with any work on Cerberus, Nig
 - Apply changes: `sudo nixos-rebuild switch`
 - Verify after rebuild: `systemctl status <service>`
 - Mythic CLI: `mythic <command>` (zsh alias) or `cd ~/Mythic && sudo ./mythic-cli`
-- Mythic UI access: `https://10.0.0.4:7443` — WireGuard only, never exposed to LAN or WAN
+- Mythic UI access: `https://10.10.10.4:7443` — WireGuard only, never exposed to LAN or WAN
 - Docker is present for Mythic only — do not use Docker for anything else on Tairn
 
 ---
@@ -62,7 +62,7 @@ Never:
 
 Example format:
 ```bash
-# On Cerberus, as foreverlx
+# On Cerberus, as operator
 sudo cp /path/to/new.conf /etc/nftables.conf
 sudo nft -c -f /etc/nftables.conf          # dry-run check
 sudo systemctl restart nftables
@@ -156,7 +156,7 @@ Rules:
 | WireGuard private keys | Never — public keys only |
 | Client or engagement identifiers | Never |
 
-The Veil public documentation already discloses: node names, WireGuard IPs (10.0.0.x), LAN IP for Cerberus (192.168.1.251), service ports, and public keys. Everything else is internal.
+The Veil public documentation already discloses: node names, WireGuard IPs (10.10.10.x), LAN IP for Cerberus (192.168.X.251), service ports, and public keys. Everything else is internal.
 
 ---
 

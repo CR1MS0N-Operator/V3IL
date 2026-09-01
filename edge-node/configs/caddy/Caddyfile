@@ -45,9 +45,9 @@ noc.lan {
 }
 
 :8487 {
-    reverse_proxy 10.0.0.4:61208
+    reverse_proxy 10.10.10.4:61208
 }
 
 :8488 {
-    reverse_proxy 10.0.0.5:61208
+    reverse_proxy 10.10.10.5:61208
 }

@@ -124,6 +124,6 @@ Header format for each file:
 
 - Produce one complete skill file at a time
 - Each file should be immediately uploadable to the Claude project — no placeholders, no "TBD" sections
-- Write the files as instructions Claude follows, not documentation for Darrius to read
+- Write the files as instructions Claude follows, not documentation for the operator to read
 - Be specific: generic advice ("write clearly") is useless; concrete rules ("always include a metadata block with challenge name, platform, difficulty, tools used, date, time spent") are useful
 - After all five files are produced, suggest 2-3 additional skill files that would add value based on patterns you've observed in this work — don't produce them without confirmation

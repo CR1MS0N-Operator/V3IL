@@ -49,7 +49,7 @@ Do not assume the scheduled next session is the priority. Do not assume a diverg
 Also cross-check backlog items against the session logs. If a backlog item says a decision or milestone is "not yet done" but the session logs mention it being completed or finalized, treat that as a handoff capture failure and surface it immediately: "The backlog says [item] is pending but Session [N] log mentions it was completed — confirming state before proceeding."
 
 **Step 3 — Check for documentation debt**
-If the last session involved a learning track, ask: "Is the artifact from last session committed?" If not, that gets handled before new material starts. This enforces the no-documentation-debt rule from Skill 4 without requiring Darrius to remember it.
+If the last session involved a learning track, ask: "Is the artifact from last session committed?" If not, that gets handled before new material starts. This enforces the no-documentation-debt rule from Skill 4 without requiring the operator to remember it.
 
 Steps 2 through 3 should take under two minutes. The goal is a clean starting state, not a lengthy review.
 
@@ -92,7 +92,7 @@ The operator rules in Section 0 of the handoff apply throughout. Never ask for c
 ## Session Close Triggers
 
 **Hard triggers — always respond immediately:**
-- Darrius says "session close" or "wrap up"
+- The operator says "session close" or "wrap up"
 
 **Soft triggers — suggest with a single line:**
 "Natural stopping point — session close?"
@@ -120,7 +120,7 @@ Call `view` on skill-06 before asking the five questions. Do not run the close p
 
 **Step 1 — Ask the five questions**
 
-Ask all five before generating anything. Wait for Darrius to answer each one.
+Ask all five before generating anything. Wait for the operator to answer each one.
 
 1. What did we complete or change this session?
 2. Any infrastructure state changes on Cerberus, NightForge, or Tairn?
@@ -174,7 +174,7 @@ Rules for the session log:
 
 **Step 4 — Output changed sections only**
 
-Output only the sections identified in Step 2, plus Section 7. Label each section clearly so Darrius can hand them to Claude Code. Do not output the full document — Claude Code applies the edits mechanically.
+Output only the sections identified in Step 2, plus Section 7. Label each section clearly so the operator can hand them to Claude Code. Do not output the full document — Claude Code applies the edits mechanically.
 
 **Step 5 — Provide Claude Code prompt**
 
@@ -220,7 +220,7 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 | Section | Name | Changes when |
 |---|---|---|
 | 0 | Stable Reference | A decision is locked, node registry changes, operator rules update |
-| 1 | Who Darrius Is | Identity, brand philosophy, north star role, or active capability gaps change |
+| 1 | Who the Operator Is | Identity, brand philosophy, north star role, or active capability gaps change |
 | 2 | Infrastructure State | Any node's service state, config, or status changes |
 | 3 | Active Operations | C2 state, research status, or ongoing work progresses |
 | 4 | Repository State | Repos created, archived, restructured, or updated |
@@ -235,7 +235,7 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 - Reads skill-06 from memory instead of calling `view` on it
 - Generates the full handoff before the five questions are answered
 - Omits the session name from the Section 7 log entry
-- Summarizes what Darrius said without confirming accuracy
+- Summarizes what the operator said without confirming accuracy
 - Marks infrastructure changes as complete without a verification step having occurred
 - Lets a session close with unverified infrastructure changes still in flight
 - Forgets to include the commit command
@@ -250,5 +250,5 @@ The handoff follows a locked 7-section schema. Claude never reorders, renames, o
 - Reads skill-06 from memory instead of calling `view` on it
 - Skips the skill file check because the session focus seems obvious
 - Proceeds into a domain without reading the applicable skill file
-- Assumes the scheduled next session is what Darrius wants to work on without asking
+- Assumes the scheduled next session is what the operator wants to work on without asking
 - Silently skips the "no applicable skill file" confirmation for one-off sessions

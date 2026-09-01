@@ -1,13 +1,13 @@
 ---
 name: quarterly-review-execution-standard
-description: Use when Darrius initiates a quarterly review or the quarterly review calendar event fires. Governs the ten-question sequence, gap table update, upcoming quarter milestone map, calendar generation, and the Q4 hard rebuild protocol.
+description: Use when the operator initiates a quarterly review or the quarterly review calendar event fires. Governs the ten-question sequence, gap table update, upcoming quarter milestone map, calendar generation, and the Q4 hard rebuild protocol.
 ---
 
 # CR1MS0N Skill — Quarterly Review Execution Standard
 **Version:** 1.1
 **Date:** 2026-04-01
 **Purpose:** Define exactly how Claude executes the quarterly review so it produces a recalibrated plan, updated gap table, and rebuilt calendar — not just a summary of what happened.
-**Use when:** Darrius initiates a quarterly review, references the Phase 4 template, or the quarterly review calendar event fires.
+**Use when:** the operator initiates a quarterly review, references the Phase 4 template, or the quarterly review calendar event fires.
 
 ---
 
@@ -80,7 +80,7 @@ Once all ten answers are received, Claude runs this sequence in order. Do not sk
 Map answers 1–3 against last quarter's plan. State explicitly: which milestones are complete, which are partial, which are missed. One sentence per milestone — no padding. If the deliverable isn't published, it is incomplete regardless of how much work went into it.
 
 **Step 2 — Capability check**
-Answer 5 is the most important signal in the review. If Darrius can point to something concrete and demonstrable — wrote a port scanner from scratch, reproduced a Kerberoasting attack end-to-end on Tairn, captured and explained a TCP handshake at the packet level — the quarter produced retained capability. If the answer is vague, state it directly: "The quarter produced effort but the capability demonstration is unclear — this becomes the primary focus of next quarter."
+Answer 5 is the most important signal in the review. If the operator can point to something concrete and demonstrable — wrote a port scanner from scratch, reproduced a Kerberoasting attack end-to-end on Tairn, captured and explained a TCP handshake at the packet level — the quarter produced retained capability. If the answer is vague, state it directly: "The quarter produced effort but the capability demonstration is unclear — this becomes the primary focus of next quarter."
 
 **Step 3 — Update the gap table**
 Using answers 6 and 7, update the Phase 1 gap table with current honest assessments. Format:
@@ -104,7 +104,7 @@ Using answers 8–10, write the upcoming quarter's milestone map. Format matches
 If the answer to question 5 was weak, the upcoming quarter's primary focus is the capability demonstration gap — regardless of what the original plan said was next.
 
 **Step 5 — Flag trajectory changes**
-Compare actual Q[N] state against where the original 12-month plan expected Darrius to be. State the delta honestly:
+Compare actual Q[N] state against where the original 12-month plan expected the operator to be. State the delta honestly:
 
 - Ahead: name what accelerated and whether the Q4 targets can be pulled forward
 - On track: confirm the original trajectory holds
@@ -133,7 +133,7 @@ When Q4 review fires (March 1, 2027), run the ten questions as normal, then:
 2. Rebuild the north star assessment — is runZero still the destination, or has professional experience revealed a more specific or different target?
 3. Rebuild the tier structure — based on actual roles landed, interviews completed, and professional experience gained, what tier is realistic to compete for in the next 12 months?
 4. Write a full new 12-month plan from current state. Do not reference the old plan as the baseline — use actual state as the baseline.
-5. Update the handoff document Section 1 (Who Darrius Is) if the north star, philosophy, or target roles have materially changed based on a year of experience.
+5. Update the handoff document Section 1 (Who the Operator Is) if the north star, philosophy, or target roles have materially changed based on a year of experience.
 
 The hard rebuild is the most important review of the four. It's where the plan stops being a projection made in March 2026 and becomes a plan grounded in 12 months of actual data.
 
@@ -142,7 +142,7 @@ The hard rebuild is the most important review of the four. It's where the plan s
 ## What Claude Never Does During a Quarterly Review
 
 - Answers the ten questions before all ten are received
-- Softens a missed milestone into "partially achieved" without Darrius explicitly framing it that way
+- Softens a missed milestone into "partially achieved" without the operator explicitly framing it that way
 - Skips the capability check (answer 5) — this is the most important question and cannot be glossed over
 - Generates calendar events without confirmation
 - Treats the Q4 review as a standard quarterly recalibration — it is always a full rebuild

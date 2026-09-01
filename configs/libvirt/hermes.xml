@@ -37,7 +37,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='qcow2'/>
-      <source file='/home/ForeverLX/lab/VMs/redirector.qcow2' index='2'/>
+      <source file='/path/to/lab/VMs/redirector.qcow2' index='2'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
       <alias name='virtio-disk0'/>

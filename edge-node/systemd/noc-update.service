@@ -4,4 +4,4 @@ After=network-online.target
 
 [Service]
 Type=oneshot
-ExecStart=/home/foreverlx/scripts/noc/noc-update.sh
+ExecStart=$HOME/scripts/noc/noc-update.sh

@@ -12,16 +12,16 @@ Current gaps in the Veil / Cerberus edge node deployment as of 2026-03-13.
 | Vaultwarden competing services | Single user Quadlet on port 8081 |
 | No TLS frontend | Caddy deployed with local CA, all services on .lan domains |
 | Homepage no auto-start | User Quadlet, linger enabled |
-| WireGuard reboot persistence | wg-quick@wg0 enabled, NightForge peer added (10.0.0.3) |
+| WireGuard reboot persistence | wg-quick@wg0 enabled, NightForge peer added (10.10.10.3) |
 | Homepage config stale | Fully rebuilt — Netdata/Gitea widgets, icons, SearXNG search |
 | Caddy never deployed | Deployed with host networking, local CA trusted on all nodes |
 | Gitea hand-written system unit | Migrated to user Quadlet |
 | Pi-hole hand-written system unit | Migrated to system Quadlet, DNS upstream Cloudflare-only |
 | NightForge DNS single point of failure | FallbackDNS=1.1.1.1 1.0.0.1 added to resolved drop-in |
 | Cerberus hostname b-k3s | Renamed to cerberus via hostnamectl |
-| Tairn/Mythic C2 deployment | NixOS installed, Mythic + Poseidon + HTTP C2 profile deployed on 10.0.0.4 |
-| WireGuard mesh incomplete | Tairn added as 10.0.0.4, hairpin routing resolved via rp_filter + nftables |
-| Network subnet migration | All configs updated from 192.168.0.x to 192.168.1.x after ISP move |
+| Tairn/Mythic C2 deployment | NixOS installed, Mythic + Poseidon + HTTP C2 profile deployed on 10.10.10.4 |
+| WireGuard mesh incomplete | Tairn added as 10.10.10.4, hairpin routing resolved via rp_filter + nftables |
+| Network subnet migration | All configs updated from 192.168.X.0.x to 192.168.X.1.x after ISP move |
 
 
 ---

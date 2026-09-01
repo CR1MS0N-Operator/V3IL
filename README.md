@@ -543,7 +543,7 @@ bash ~/backup-script.sh
 cat ~/backup.log
 
 # Verify backup repo latest commit
-curl -s http://git.lan/foreverlx/backups | grep "commit"
+curl -s http://git.lan/CR1MS0N-Operator/backups | grep "commit"
 ```
 
 ### Maintenance
@@ -682,5 +682,5 @@ All tooling is deployed on infrastructure owned and operated by the author for a
 
 ---
 
-**Author:** Darrius Grate (CR1MS0N-Operator) | CR1MS0N Security™
+**Author:** CR1MS0N-Operator | CR1MS0N Security™
 **License:** MIT

@@ -39,10 +39,10 @@ nixos-rebuild switch   # MUST run after every configuration.nix change
 - All Tairn config: MUST go in configuration.nix, never imperative changes
 
 ## Infrastructure
-Cerberus   10.0.0.1  edge node, Podman rootless Quadlets
-NightForge 10.0.0.3  operator workstation, all code written here
-Tairn      10.0.0.4  NixOS, Mythic C2, WireGuard-only access
-Hermes     10.0.0.5  Alpine redirector, disposable
+Cerberus   10.10.10.1  edge node, Podman rootless Quadlets
+NightForge 10.10.10.3  operator workstation, all code written here
+Tairn      10.10.10.4  NixOS, Mythic C2, WireGuard-only access
+Hermes     10.10.10.5  Alpine redirector, disposable
 
 ## Model Mappings
 - **plan**: openrouter/deepseek/deepseek-v3.2 (reasoning)
@@ -78,21 +78,21 @@ Hermes     10.0.0.5  Alpine redirector, disposable
 - Never write credentials, API keys, or tokens to any file
 - Never commit files in ~/.ssh/, /etc/wireguard/, or /etc/nftables.conf
 - Always confirm before any destructive bash operation
-- Redact IP addresses in the 10.0.0.0/24 and 192.168.1.0/24 ranges from any output intended for external submission
+- Redact IP addresses in the 10.10.10.0/24 and 192.168.X.0/24 ranges from any output intended for external submission
 
 ## Extracted from CLAUDE.md
 # Veil — Infrastructure CLAUDE.md
 
 ## What This Repo Is
-Veil is Darrius's three-node WireGuard mesh infrastructure. Everything in this repo
+Veil is the operator's three-node WireGuard mesh infrastructure. Everything in this repo
 is production — changes have real consequences on a live mesh. Treat it accordingly.
 
 ## Node Registry
 | Node | Role | OS | WireGuard IP | SSH |
 |---|---|---|---|---|
-| Cerberus | Edge / hub | Arch Linux (headless) | 10.0.0.1 | `ssh cerberus` or `ssh -p 2121 foreverlx@192.168.1.251` |
-| NightForge | Operator workstation | Arch Linux | 10.0.0.3 | `ssh nightforge` |
-| Tairn | Attack node / C2 | NixOS 24.11 | 10.0.0.4 | `ssh tairn` (WireGuard only) |
+| Cerberus | Edge / hub | Arch Linux (headless) | 10.10.10.1 | `ssh cerberus` or `ssh -p 2121 operator@192.168.X.251` |
+| NightForge | Operator workstation | Arch Linux | 10.10.10.3 | `ssh nightforge` |
+| Tairn | Attack node / C2 | NixOS 24.11 | 10.10.10.4 | `ssh tairn` (WireGuard only) |
 
 ## Key Paths
 **Cerberus:**
@@ -116,12 +116,12 @@ is production — changes have real consequences on a live mesh. Treat it accord
 - `~/Mythic/` — Mythic C2 installation
 
 ## Topology Rules (Hard)
-- Hub-and-spoke via Cerberus — all traffic routes through 10.0.0.1
+- Hub-and-spoke via Cerberus — all traffic routes through 10.10.10.1
 - Tairn initiates to Cerberus only — Cerberus has no endpoint entry for Tairn
-- NightForge reaches Tairn via WireGuard (10.0.0.4) — never via 192.168.122.230
-- Cerberus cannot reach 192.168.122.x — libvirt NAT is NightForge-only
+- NightForge reaches Tairn via WireGuard (10.10.10.4) — never via 192.168.X.122.230
+- Cerberus cannot reach 192.168.X.122.x — libvirt NAT is NightForge-only
 - WireGuard on NightForge: `sudo resolvconf -u && sudo wg-quick up wg0`
-- Tairn config changes always require `sudo nixos-rebuild switch` — Darrius executes only
+- Tairn config changes always require `sudo nixos-rebuild switch` — operator executes only
 
 ## Container Runtime Split
 - **Cerberus:** Podman rootless Quadlets (no daemon, security-first)
@@ -136,10 +136,10 @@ is production — changes have real consequences on a live mesh. Treat it accord
 - Generate conventional commits and stage changes
 
 ## What Claude Code Must Never Do in This Repo
-- Edit `wg0.conf` directly on any node — suggest the change, Darrius applies it
-- Edit `configuration.nix` directly — suggest only, Darrius reviews and applies
-- Run `sudo nixos-rebuild switch` — Darrius executes after reviewing diff
-- Run `sudo wg-quick` or any `wg` command — Darrius executes manually
+- Edit `wg0.conf` directly on any node — suggest the change, operator applies it
+- Edit `configuration.nix` directly — suggest only, operator reviews and applies
+- Run `sudo nixos-rebuild switch` — operator executes after reviewing diff
+- Run `sudo wg-quick` or any `wg` command — operator executes manually
 - Run `sudo systemctl` commands touching WireGuard services
 - Assume a topology change is safe — always surface the failure mode first
 
@@ -148,7 +148,7 @@ is production — changes have real consequences on a live mesh. Treat it accord
 |---|---|---|
 | C2 framework | Mythic | Industry recognized, rich agent ecosystem |
 | Primary agent | Poseidon (Go, Linux) | Aligns with Linux/kernel focus |
-| C2 network access | WireGuard-only (10.0.0.x) | Mirrors real engagement OPSEC |
+| C2 network access | WireGuard-only (10.10.10.x) | Mirrors real engagement OPSEC |
 | C2 VM OS | NixOS 24.11 | Declarative, reproducible, portfolio signal |
 | Container runtime (Cerberus) | Podman rootless Quadlets | Security, no daemon |
 | Container runtime (Tairn) | Docker | Mythic officially supports Docker |
@@ -156,7 +156,7 @@ is production — changes have real consequences on a live mesh. Treat it accord
 | TLS | Caddy local CA | Simple, automatic for .lan |
 
 ## Gitea Remote
-`ssh://git@192.168.1.251:2222/foreverlx/veil.git`
+`ssh://git@git.lan/<user>/<repo>.git`
 Sync to both GitHub and Gitea on every push.
 
 ## Name History

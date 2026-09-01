@@ -1,13 +1,13 @@
 ---
 name: job-application-career-filter
-description: Use when Darrius asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning relative to the CR1MS0N trajectory.
+description: Use when the operator asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning relative to the CR1MS0N trajectory.
 ---
 
 # CR1MS0N Skill — Job Application & Career Filter
 **Version:** 1.1
 **Date:** 2026-03-19
 **Purpose:** Define a consistent filter and output standard for evaluating job postings and producing application materials aligned with the CR1MS0N career trajectory.
-**Use when:** Darrius asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning.
+**Use when:** the operator asks Claude to evaluate a job posting, help draft application materials, review a resume or cover letter, or think through career positioning.
 
 ---
 

@@ -20,7 +20,7 @@ Complete build log for the Cerberus edge node.
 - **Distribution:** Arch Linux (minimal server install)
 - **Kernel:** 6.19.6-arch1-1 (PREEMPT_DYNAMIC)
 - **Hostname:** Cerberus
-- **Primary user:** foreverlx (UID 1000)
+- **Primary user:** operator (UID 1000)
 
 ---
 
@@ -88,7 +88,7 @@ Key configuration:
 
 ```bash
 # Allow user services to persist after logout
-loginctl enable-linger foreverlx
+loginctl enable-linger operator
 ```
 
 Cerberus components use Quadlets in `~/.config/containers/systemd/`. Legacy homelab services use system-level units in `/etc/systemd/system/`.
@@ -130,14 +130,14 @@ sudo tailscale up
 
 ## Scheduled Tasks
 
-### User Crontab (foreverlx)
+### User Crontab (operator)
 
 ```
-0 2 * * *   /usr/bin/bash /home/foreverlx/backup-script.sh > /home/foreverlx/backup.log 2>&1
-0 3 * * *   /home/foreverlx/scripts/maintenance.sh
+0 2 * * *   /usr/bin/bash /home/$USER/backup-script.sh > /home/$USER/backup.log 2>&1
+0 3 * * *   /home/$USER/scripts/maintenance.sh
 ```
 
-**backup-script.sh** — Backs up Vaultwarden SQLite database to `/home/foreverlx/backups/vaultwarden/` and commits to a private Gitea repository.
+**backup-script.sh** — Backs up Vaultwarden SQLite database to `/home/$USER/backups/vaultwarden/` and commits to a private Gitea repository.
 
 **maintenance.sh** — Updates Suricata rules, rotates old JSON logs (>3 days), backs up Vaultwarden and Homepage configs, pre-downloads Arch updates.
 

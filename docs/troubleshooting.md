@@ -21,7 +21,7 @@ Caddyfile updated, all service URLs updated
 **Symptom:** All DNS resolution fails on NightForge including public internet
 **Root cause:** Single DNS server (Pi-hole on Cerberus) with no fallback configured
 **Resolution:** Added dual Cloudflare fallback to systemd-resolved drop-in at
-/etc/systemd/resolved.conf.d/20-pihole.conf — DNS=192.168.0.251,
+/etc/systemd/resolved.conf.d/20-pihole.conf — DNS=192.168.X.0.251,
 FallbackDNS=1.1.1.1 1.0.0.1, Domains=~lan
 **Lesson:** Always configure fallback DNS — single point of failure for DNS
 is unacceptable even in a homelab
@@ -31,7 +31,7 @@ is unacceptable even in a homelab
 ### Issue: Cerberus not using its own Pi-hole for DNS
 **Symptom:** curl https://search.lan fails on Cerberus, resolves fine externally
 **Root cause:** /etc/resolv.conf managed by NetworkManager, pointing to 1.1.1.1
-**Resolution:** Manually set resolv.conf to 192.168.0.251 as primary nameserver,
+**Resolution:** Manually set resolv.conf to 192.168.X.0.251 as primary nameserver,
 then used chattr +i to prevent NetworkManager from overwriting it
 **Lesson:** Always verify the node hosting DNS is also using it
 
@@ -74,7 +74,7 @@ addressing, not .lan domains for widget URLs
 but dnsmasq never responds. journalctl shows no DHCPDISCOVER entries.
 **Root cause:** nftables input chain policy DROP with no rule allowing UDP port 67
 (DHCP). DHCP discover packets from VMs (source 0.0.0.0) don't match the existing
-`ip saddr 192.168.122.0/24 iif "virbr0" accept` rule because they have no IP yet.
+`ip saddr 192.168.X.122.0/24 iif "virbr0" accept` rule because they have no IP yet.
 libvirt also defaults to iptables backend — must explicitly set nftables backend.
 **Resolution:**
 - Set firewall_backend = "nftables" in /etc/libvirt/network.conf
@@ -121,7 +121,7 @@ limitation rather than forcing an inappropriate solution
 ### Issue: SearXNG ownership conflict after first container run
 **Symptom:** sed/chmod on config files returns "Operation not permitted"
 **Root cause:** Container ran as UID 100976, took ownership of mounted config files
-**Resolution:** sudo chown -R foreverlx:foreverlx ~/searxng/config/
+**Resolution:** sudo chown -R operator:operator ~/searxng/config/
 Stop container before editing mounted config files
 **Lesson:** Stop containers before editing their mounted config volumes
 
@@ -161,7 +161,7 @@ risk that rp_filter normally guards against.
 
 ### Issue: Tairn WireGuard peer config drift after reboot
 
-**Symptom:** Cerberus wg show shows Tairn endpoint as 192.168.1.145:50555 (NightForge's LAN IP), no handshake
+**Symptom:** Cerberus wg show shows Tairn endpoint as 192.168.X.145:50555 (NightForge's LAN IP), no handshake
 **Resolution:** Corrected Cerberus wg0.conf — removed Tairn endpoint entirely (Tairn initiates). Corrected Tairn configuration.nix — 10.10.10.1/32 on Cerberus peer, removed direct endpoint from NightForge peer
 **Lesson:** In hub-and-spoke, spokes initiate to hub only. Hub should have no endpoint for spokes — WireGuard learns it dynamically. Never set a spoke-to-spoke direct endpoint.
 
@@ -203,7 +203,7 @@ Homepage widget not updated for v6 API.
 ### Issue: User Quadlets not starting after reboot on headless node
 **Symptom:** All user services down after reboot with no active SSH session
 **Root cause:** systemd user session not started without active login
-**Resolution:** loginctl enable-linger foreverlx
+**Resolution:** loginctl enable-linger operator
 **Lesson:** Always enable linger for headless nodes running user Quadlets
 
 ---
@@ -242,9 +242,9 @@ always use Quadlets for new deployments
 ### Issue: Gitea SSH push hangs or permission denied from NightForge
 **Symptom:** `git push` to git.lan hangs or returns permission denied
 **Root cause:** Two compounding issues:
-1. git.lan resolves to LAN IP (192.168.1.251) — Gitea SSH port 2222 is
+1. git.lan resolves to LAN IP (192.168.X.251) — Gitea SSH port 2222 is
    WireGuard-only per nftables access model, not accessible via LAN
-2. Remote URL had `foreverlx` as SSH user — Gitea requires `git` as the
+2. Remote URL had `operator` as SSH user — Gitea requires `git` as the
    system SSH user regardless of account name
 **Resolution:** SSH config Host git.lan must use HostName 10.10.10.1 (WireGuard).
 Remote URL format: ssh://git@git.lan:2222/<account>/<repo>.git

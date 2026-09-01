@@ -7,7 +7,7 @@ For config files (WireGuard, NixOS, nftables, Quadlets, Caddyfile):
 - Flag anything that violates the hub-and-spoke topology rules
 - Explain what each changed block does mechanically
 - Surface failure modes before suggesting any change
-- Never suggest applying changes — Darrius applies all infra changes manually
+- Never suggest applying changes — operator applies all infra changes manually
 
 For documentation (troubleshooting.md, skill files, README):
 - Check for accuracy against current node state

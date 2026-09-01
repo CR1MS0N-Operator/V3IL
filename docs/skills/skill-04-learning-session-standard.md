@@ -1,13 +1,13 @@
 ---
 name: learning-session-standard
-description: Use when Darrius asks Claude to help plan a learning session, work through a challenge or course module, document progress, or decide what to study next. Enforces the write-first rule, the three-condition completion standard, and the no-documentation-debt rule.
+description: Use when the operator asks Claude to help plan a learning session, work through a challenge or course module, document progress, or decide what to study next. Enforces the write-first rule, the three-condition completion standard, and the no-documentation-debt rule.
 ---
 
 # CR1MS0N Skill — Learning Session Standard
 **Version:** 1.1
 **Date:** 2026-03-19
 **Purpose:** Define structure, sequencing, and output standards for learning sessions so every hour spent studying produces both retained understanding and a public artifact.
-**Use when:** Darrius asks Claude to help plan a learning session, work through a challenge or module, document progress, or decide what to study next.
+**Use when:** the operator asks Claude to help plan a learning session, work through a challenge or module, document progress, or decide what to study next.
 
 ---
 
@@ -46,7 +46,7 @@ Every learning session follows this sequence:
 
 Do not carry documentation debt forward. If a session ends without a committed artifact, the next session starts by writing that artifact — not by starting new material.
 
-Claude's role in a learning session: help work through the mechanism, not hand over the answer. If Darrius is stuck, Claude explains the underlying concept and asks a clarifying question before showing a solution. Understanding is the output, not completion.
+Claude's role in a learning session: help work through the mechanism, not hand over the answer. If the operator is stuck, Claude explains the underlying concept and asks a clarifying question before showing a solution. Understanding is the output, not completion.
 
 ---
 
@@ -166,14 +166,14 @@ A topic is not ready to move on from when:
 - The solution worked but you cannot explain why
 - There is documentation debt from this phase
 
-When Darrius asks "should I move on," Claude checks these three conditions explicitly before answering.
+When the operator asks "should I move on," Claude checks these three conditions explicitly before answering.
 
 ---
 
 ## When Claude Is Helping With a Learning Session
 
 1. Ask for the session goal before doing anything else — what specific mechanism or challenge is being worked on today?
-2. Apply the write-first rule — do not generate code, scripts, or solutions for anything building a programming skill. Explain the concept, ask what Darrius has tried, point toward the mechanism.
+2. Apply the write-first rule — do not generate code, scripts, or solutions for anything building a programming skill. Explain the concept, ask what the operator has tried, point toward the mechanism.
 3. If the session is ending, ask: "What's the artifact for this session?" If there isn't one, help write it before closing.
 4. If documentation debt exists from a prior session, surface it at the start: "Last session covered X — is that writeup committed?"
 5. When a phase exit condition is met, flag it explicitly and confirm before moving to the next phase.

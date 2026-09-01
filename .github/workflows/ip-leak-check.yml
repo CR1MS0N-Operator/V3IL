@@ -33,7 +33,7 @@ jobs:
           while IFS= read -r line; do
             file=$(echo "$line" | cut -d: -f1)
             # Skip submodules and example files
-            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules|AGENTS\.md|docs/|configs/|edge-node/|\.nix$|ip-leak-check.yml)' && continue
+            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules|\.nix$|ip-leak-check.yml)' && continue
             echo "WARNING: Possible real IP in $file"
             echo "  $line"
             BAD_IPS=$((BAD_IPS + 1))
@@ -44,7 +44,7 @@ jobs:
           WG_KEYS=0
           while IFS= read -r line; do
             file=$(echo "$line" | cut -d: -f1)
-            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules|AGENTS\.md|docs/|configs/|edge-node/|\.nix$|ip-leak-check.yml)' && continue
+            echo "$file" | grep -qE '(nightforge-vpn-tui|\.example|node_modules|\.nix$|ip-leak-check.yml)' && continue
             echo "WARNING: Possible private key in $file"
             WG_KEYS=$((WG_KEYS + 1))
           done < <(grep -rnP 'PrivateKey\s*=\s*[^R]' --include='*.conf' --include='*.nix' --include='*.yaml' --include='*.yml' . 2>/dev/null || true)
@@ -54,7 +54,7 @@ jobs:
           API_KEYS=0
           while IFS= read -r line; do
             file=$(echo "$line" | cut -d: -f1)
-            echo "$file" | grep -qE '(nightforge-vpn-tui|node_modules|AGENTS\.md|docs/|configs/|edge-node/|\.nix$|ip-leak-check.yml)' && continue
+            echo "$file" | grep -qE '(nightforge-vpn-tui|node_modules|\.nix$|ip-leak-check.yml)' && continue
             echo "WARNING: Possible API key in $file"
             API_KEYS=$((API_KEYS + 1))
           done < <(grep -rnP '(key:\s*"?!?[A-Za-z0-9]{20,}|api[_-]?key|api[_-]?token|secret[_-]?key)' --include='*.yaml' --include='*.yml' --include='*.json' --include='*.conf' . 2>/dev/null | grep -v '"ROTATED"' || true)

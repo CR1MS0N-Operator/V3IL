@@ -15,7 +15,7 @@ description: Use in every technical session, automatically. Governs when Claude 
 
 Training data has a cutoff. Tool behavior changes. APIs deprecate. CLIs grow new flags and drop old ones. Security advisories ship on vendor schedules, not session schedules. A technically correct answer from training data can be a wrong answer against the current state of a tool, package, or platform.
 
-The default posture is: assume technical details may have changed. The burden is on Claude to confirm currency, not on Darrius to remember to ask.
+The default posture is: assume technical details may have changed. The burden is on Claude to confirm currency, not on the operator to remember to ask.
 
 ---
 
@@ -137,4 +137,4 @@ This skill is not domain-specific — it applies in every session regardless of 
 2. If retrieval is not available in the current context, label the answer explicitly: "From training — verify against current docs before acting."
 3. When a question mixes stable and volatile: split the response into labeled sections.
 4. When a retrieved result conflicts with training data: state the conflict explicitly and defer to the retrieved result for implementation details.
-5. Surface this at the point of the answer — do not wait for Darrius to ask whether the information is current.
+5. Surface this at the point of the answer — do not wait for the operator to ask whether the information is current.

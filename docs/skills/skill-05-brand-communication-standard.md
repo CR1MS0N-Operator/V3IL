@@ -1,13 +1,13 @@
 ---
 name: brand-communication-standard
-description: Use when Darrius asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, or personal site copy. Governs voice, AI-tell checks, em-dash prohibition, and the brand positioning rules.
+description: Use when the operator asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, or personal site copy. Governs voice, AI-tell checks, em-dash prohibition, and the brand positioning rules.
 ---
 
 # CR1MS0N Skill — Brand & Communication Standard
 **Version:** 1.2
 **Date:** 2026-03-27
 **Purpose:** Define voice, positioning, and quality standards for all public-facing content produced under the CR1MS0N brand.
-**Use when:** Darrius asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, personal site copy, or any content that represents CR1MS0N publicly.
+**Use when:** the operator asks Claude to help write or review any public-facing content — GitHub READMEs, research writeups, LinkedIn posts, conference abstracts, personal site copy, or any content that represents CR1MS0N publicly.
 
 ---
 

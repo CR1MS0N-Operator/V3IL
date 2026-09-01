@@ -1,5 +1,5 @@
 [Interface]
-Address = 10.0.0.1/24
+Address = 10.10.10.1/24
 ListenPort = 51820
 PrivateKey = REDACTED
 
@@ -10,9 +10,9 @@ PostDown = iptables -D FORWARD -i wg0 -j ACCEPT; iptables -t nat -D POSTROUTING 
 # iPhone Client
 [Peer]
 PublicKey = REDACTED
-AllowedIPs = 10.0.0.2/32
+AllowedIPs = 10.10.10.2/32
 
 # Workstation
 [Peer]
 PublicKey = REDACTED
-AllowedIPs = 10.0.0.3/32
+AllowedIPs = 10.10.10.3/32

@@ -6,10 +6,10 @@ PEERS='{"peers":['
 FIRST=1
 
 declare -A NAMES
-NAMES["10.0.0.3"]="NightForge"
-NAMES["10.0.0.4"]="Tairn"
-NAMES["10.0.0.5"]="Hermes"
-NAMES["10.0.0.2"]="iPhone"
+NAMES["10.10.10.3"]="NightForge"
+NAMES["10.10.10.4"]="Tairn"
+NAMES["10.10.10.5"]="Hermes"
+NAMES["10.10.10.2"]="iPhone"
 
 THRESHOLD=300
 

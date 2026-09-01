@@ -205,12 +205,12 @@ NightForge (any network) → Cloudflare Tunnel auth → Oracle VM:7443
 
 ```mermaid
 graph TB
-    subgraph "Home LAN (192.168.1.0/24)"
+    subgraph "Home LAN (192.168.X.0/24)"
         CERB[Cerberus<br/>10.10.10.1<br/>Edge Node]
         NF[NightForge<br/>10.10.10.3<br/>Workstation]
     end
     
-    subgraph "Libvirt NAT (192.168.122.0/24)"
+    subgraph "Libvirt NAT (192.168.X.122.0/24)"
         TAIRN[Tairn<br/>10.10.10.4<br/>Mythic C2]
         HERMES[Hermes<br/>10.10.10.5<br/>Redirector]
     end

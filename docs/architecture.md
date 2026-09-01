@@ -26,7 +26,7 @@ Veil operates as a two-tier architecture:
     │  Cerberus     │         │  NightForge workstation   │
     │ .251       │◄───────►│  Workstation│
     │ Edge Node  │ WireGuard│  C2 Backend │
-    └────────────┘ 10.0.0.x └─────────────┘
+    └────────────┘ 10.10.10.x └─────────────┘
           │
           │ Tailscale (remote access)
 ```
