@@ -1,0 +1,55 @@
+#!/bin/bash
+# Pre-commit hook: scan staged files for sensitive patterns
+# Exits non-zero if any matches found (blocking commit)
+
+set -euo pipefail
+
+ERRORS=0
+
+# Get staged files (exclude deletions)
+STAGED=$(git diff --cached --name-only --diff-filter=ACM)
+
+for file in $STAGED; do
+  # Skip binary/irrelevant files and CI/workflow configs
+  case "$file" in
+    *.example|*.nix|.github/*) continue ;;
+  esac
+  
+  # Check for real LAN IPs (192.168.1.x or 192.168.0.x — but not 192.168.X.x placeholders)
+  if grep -nP '192\.168\.[0-9]+\.' "$file" 2>/dev/null | grep -v '192\.168\.X\.' | grep -q .; then
+    echo "ERROR: $file contains what looks like a real LAN IP (192.168.x.x)"
+    grep -nP '192\.168\.[0-9]+\.' "$file" 2>/dev/null | grep -v '192\.168\.X\.' | head -3
+    ERRORS=$((ERRORS + 1))
+  fi
+  
+  # Check for real mesh IPs (10.0.0.x — the real WG range)
+  if grep -nP '10\.0\.0\.' "$file" 2>/dev/null | grep -q .; then
+    echo "ERROR: $file contains 10.0.0.x mesh IP"
+    grep -nP '10\.0\.0\.' "$file" 2>/dev/null | head -3
+    ERRORS=$((ERRORS + 1))
+  fi
+  
+  # Check for ForeverLX/foreverlx references
+  if grep -inP 'foreverlx' "$file" 2>/dev/null | grep -q .; then
+    echo "ERROR: $file contains ForeverLX reference"
+    grep -inP 'foreverlx' "$file" 2>/dev/null | head -3
+    ERRORS=$((ERRORS + 1))
+  fi
+  
+  # Check for WireGuard public key pattern (43 chars ending in =)
+  if grep -nP '[A-Za-z0-9+/]{43}=' "$file" 2>/dev/null | grep -v 'REDACTED' | grep -q .; then
+    echo "WARNING: $file may contain a WireGuard public key"
+    grep -nP '[A-Za-z0-9+/]{43}=' "$file" 2>/dev/null | grep -v 'REDACTED' | head -3
+    ERRORS=$((ERRORS + 1))
+  fi
+done
+
+if [ "$ERRORS" -gt 0 ]; then
+  echo ""
+  echo "Commit blocked: $ERRORS security issue(s) found."
+  echo "Fix the issues above or use 'git commit --no-verify' to bypass."
+  exit 1
+fi
+
+echo "Pre-commit security check: PASS"
+exit 0
